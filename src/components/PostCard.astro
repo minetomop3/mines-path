@@ -20,7 +20,7 @@ const formattedDate = pubDate.toLocaleDateString('ja-JP', {
   {heroImage && (
     <a href={`/blog/${post.slug}`} class="post-card-image-link" tabindex="-1" aria-hidden="true">
       <div class="post-card-image">
-        <img src={`${import.meta.env.BASE_URL}${heroImage.replace(/^\//, '')}`} alt={title} loading="lazy" />
+        <img src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}${heroImage}`} alt={title} loading="lazy" />
       </div>
     </a>
   )}
