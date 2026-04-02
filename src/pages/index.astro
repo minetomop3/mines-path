@@ -1,0 +1,435 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostCard from '../components/PostCard.astro';
+import AdPlaceholder from '../components/AdPlaceholder.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categories = [
+  { slug: 'mba',   label: '経営学 / MBA',       desc: 'ビジネス戦略・フレームワーク・経営思想',   icon: '📊', color: 'var(--cat-mba)'   },
+  { slug: 'tech',  label: 'AI・プログラミング',  desc: 'Claude API・機械学習・開発ノウハウ',       icon: '⚙️', color: 'var(--cat-tech)'  },
+  { slug: 'essay', label: '日々のエッセイ',       desc: '思考の断片・日常観察・生き方',             icon: '✍️', color: 'var(--cat-essay)' },
+  { slug: 'novel', label: '小説・創作',           desc: '短編小説・詩・インタラクティブ作品',       icon: '📖', color: 'var(--cat-novel)' },
+];
+
+// 人気ピックアップ（ビュー数が多い記事を優先 → カテゴリ別最新）
+const popularSlugs = ['na7a348f6a1d8', 'n2a2e696fff23', 'n4773cc16ddfd', 'n52b01144bf65'];
+const popularPosts = popularSlugs
+  .map(slug => allPosts.find(p => p.slug === slug))
+  .filter(Boolean);
+
+const latestPosts = allPosts.slice(0, 6);
+---
+
+<BaseLayout title="Home">
+  <!-- ======================================================
+       Hero Section
+  ====================================================== -->
+  <section class="hero">
+    <div class="hero-inner container">
+      <div class="hero-tag">Personal Blog</div>
+      <h1 class="hero-title">
+        人生を豊かにする<br />知恵と物語
+      </h1>
+      <p class="hero-lead">
+        MBA経営学の思考法、AIとプログラミングの実践、<br class="br-desktop" />
+        日々の観察、そして小説という創造——<br />
+        <strong>mines-path</strong>へようこそ。
+      </p>
+      <div class="hero-actions">
+        <a href="/blog" class="btn btn-primary">全記事を読む</a>
+        <a href="/about" class="btn btn-outline">About</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">4,141</span><span class="stat-label">PV</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-num">60+</span><span class="stat-label">記事</span></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><span class="stat-num">525</span><span class="stat-label">スキ</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       Category Showcase
+  ====================================================== -->
+  <section class="section-categories container">
+    <h2 class="section-title">カテゴリ</h2>
+    <div class="category-grid">
+      {categories.map(cat => (
+        <a href={`/category/${cat.slug}`} class="category-card" style={`--cat: ${cat.color}`}>
+          <div class="category-icon">{cat.icon}</div>
+          <h3 class="category-name">{cat.label}</h3>
+          <p class="category-desc">{cat.desc}</p>
+          <span class="category-arrow">→</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- ======================================================
+       Popular Posts
+  ====================================================== -->
+  <section class="section-featured container">
+    <div class="section-header">
+      <h2 class="section-title">人気記事</h2>
+      <a href="/blog" class="view-all">すべて見る →</a>
+    </div>
+    <div class="featured-grid">
+      {popularPosts.map(post => post && (
+        <PostCard post={post} featured={true} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Ad -->
+  <div class="container">
+    <AdPlaceholder slot="in-article" label="広告" />
+  </div>
+
+  <!-- ======================================================
+       Latest Posts
+  ====================================================== -->
+  <section class="section-latest container">
+    <div class="section-header">
+      <h2 class="section-title">最新記事</h2>
+      <a href="/blog" class="view-all">すべて見る →</a>
+    </div>
+    <div class="posts-grid">
+      {latestPosts.map(post => (
+        <PostCard post={post} />
+      ))}
+    </div>
+  </section>
+
+  <!-- ======================================================
+       Interactive Novels CTA
+  ====================================================== -->
+  <section class="section-novels container">
+    <div class="novels-cta">
+      <div class="novels-cta-text">
+        <div class="novels-cta-tag">新体験</div>
+        <h2 class="novels-cta-title">動く小説を<br />読んでみませんか？</h2>
+        <p class="novels-cta-desc">
+          スクロールに連動したアニメーションで語られる物語。<br />
+          読むのではなく、「体験する」小説の世界へ。
+        </p>
+        <a href="/novels" class="btn btn-primary">小説を読む</a>
+      </div>
+      <div class="novels-cta-visual" aria-hidden="true">
+        <div class="novel-preview">
+          <div class="novel-line"></div>
+          <div class="novel-line novel-line--short"></div>
+          <div class="novel-line"></div>
+          <div class="novel-line novel-line--medium"></div>
+          <div class="novel-line novel-line--short"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+/* ============================================================
+   Hero — Light Theme
+   ============================================================ */
+.hero {
+  background: linear-gradient(135deg, #fdfcf8 0%, #f5f3ec 50%, #fdfcf8 100%);
+  border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+  position: relative;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 70%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 1;
+  padding-top: var(--space-3xl);
+  padding-bottom: var(--space-3xl);
+  max-width: 680px;
+}
+
+.hero-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  border: 1.5px solid var(--color-accent-dim);
+  padding: 4px 14px;
+  border-radius: 100px;
+  margin-bottom: var(--space-xl);
+  background: var(--color-accent-bg);
+}
+
+.hero-title {
+  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  margin-bottom: var(--space-xl);
+}
+
+.hero-lead {
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  color: var(--color-text-muted);
+  line-height: 1.9;
+  margin-bottom: var(--space-2xl);
+}
+.hero-lead strong { color: var(--color-accent); font-weight: 700; }
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-xl);
+}
+
+/* Stats */
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-xl);
+}
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat-num {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--color-text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.stat-sep {
+  width: 1px;
+  height: 32px;
+  background: var(--color-border);
+}
+
+/* ============================================================
+   Sections Common
+   ============================================================ */
+.section-categories,
+.section-featured,
+.section-latest,
+.section-novels {
+  padding: var(--space-3xl) var(--space-lg);
+}
+
+.section-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: var(--color-text);
+  position: relative;
+  padding-left: var(--space-md);
+}
+.section-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 1.1em;
+  background: var(--color-accent);
+  border-radius: 2px;
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-xl);
+}
+.section-header .section-title { margin-bottom: 0; }
+.section-categories .section-title { margin-bottom: var(--space-xl); }
+
+.view-all {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+.view-all:hover { color: var(--color-accent-light); }
+
+/* ============================================================
+   Category Grid
+   ============================================================ */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-lg);
+}
+
+.category-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  text-decoration: none;
+  color: inherit;
+  transition: border-color var(--transition-md), transform var(--transition-md), box-shadow var(--transition-md);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.category-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--cat, var(--color-accent));
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--transition-md);
+}
+.category-card:hover {
+  border-color: var(--color-border-light);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.category-card:hover::after { transform: scaleX(1); }
+
+.category-icon { font-size: 2rem; }
+.category-name { font-size: 1rem; font-weight: 700; color: var(--color-text); }
+.category-desc { font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.6; flex: 1; }
+.category-arrow { font-size: 1.1rem; font-weight: 700; color: var(--cat, var(--color-accent)); margin-top: auto; }
+
+/* ============================================================
+   Grids
+   ============================================================ */
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+/* ============================================================
+   Novels CTA
+   ============================================================ */
+.novels-cta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2xl);
+  align-items: center;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--cat-novel) 8%, white),
+    color-mix(in srgb, var(--cat-novel) 3%, white)
+  );
+  border: 1.5px solid color-mix(in srgb, var(--cat-novel) 25%, var(--color-border));
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.novels-cta-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cat-novel);
+  border: 1.5px solid var(--cat-novel);
+  display: inline-block;
+  padding: 3px 12px;
+  border-radius: 100px;
+  margin-bottom: var(--space-lg);
+  background: white;
+}
+
+.novels-cta-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.4;
+  margin-bottom: var(--space-lg);
+  color: var(--color-text);
+}
+
+.novels-cta-desc {
+  color: var(--color-text-muted);
+  line-height: 1.8;
+  margin-bottom: var(--space-xl);
+}
+
+.novels-cta-visual { display: flex; justify-content: center; align-items: center; }
+
+.novel-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 280px;
+}
+.novel-line {
+  height: 2px;
+  background: var(--cat-novel);
+  border-radius: 1px;
+  opacity: 0.4;
+  animation: novelPulse 2.5s ease-in-out infinite;
+}
+.novel-line--short { width: 45%; }
+.novel-line--medium { width: 70%; }
+.novel-line:nth-child(2) { animation-delay: 0.4s; }
+.novel-line:nth-child(3) { animation-delay: 0.8s; }
+.novel-line:nth-child(4) { animation-delay: 1.2s; }
+.novel-line:nth-child(5) { animation-delay: 1.6s; }
+
+@keyframes novelPulse {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.6; }
+}
+
+/* Responsive */
+.br-desktop { display: block; }
+
+@media (max-width: 1024px) {
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .posts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .featured-grid { grid-template-columns: 1fr; }
+  .novels-cta { grid-template-columns: 1fr; }
+  .novels-cta-visual { display: none; }
+  .br-desktop { display: none; }
+  .hero-stats { gap: var(--space-md); }
+}
+@media (max-width: 480px) {
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .posts-grid { grid-template-columns: 1fr; }
+}
+</style>

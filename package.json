@@ -1,0 +1,16 @@
+{
+  "name": "personal-website",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "process-notes": "node scripts/process-notes.js"
+  },
+  "dependencies": {
+    "astro": "^4.16.0",
+    "@anthropic-ai/sdk": "^0.30.0"
+  }
+}

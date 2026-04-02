@@ -1,0 +1,60 @@
+---
+interface Props {
+  slot?: 'header' | 'sidebar' | 'in-article' | 'footer';
+  label?: string;
+}
+
+const { slot = 'in-article', label } = Astro.props;
+
+const sizes: Record<string, string> = {
+  header:     '728×90',
+  sidebar:    '300×250',
+  'in-article': '468×60',
+  footer:     '728×90',
+};
+
+const displayLabel = label ?? `広告 (${sizes[slot] ?? 'responsive'})`;
+---
+
+<div class={`ad-placeholder ad-${slot}`} aria-label="広告エリア">
+  <span class="ad-label">{displayLabel}</span>
+  <!-- Google AdSense の例:
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  -->
+</div>
+
+<style>
+.ad-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border-light);
+  border-radius: var(--radius-md);
+  color: var(--color-text-faint);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: var(--space-xl) 0;
+}
+
+.ad-header, .ad-footer {
+  width: 100%;
+  min-height: 90px;
+}
+.ad-sidebar {
+  width: 300px;
+  height: 250px;
+}
+.ad-in-article {
+  width: 100%;
+  min-height: 60px;
+}
+</style>

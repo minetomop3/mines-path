@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import AdPlaceholder from '../../components/AdPlaceholder.astro';
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const categoryMeta: Record<string, { label: string; desc: string; color: string; icon: string }> = {
+    mba:   { label: '経営学 / MBA',      desc: 'ビジネス戦略・経営フレームワーク・MBA的思考法を発信。',       color: 'var(--cat-mba)',   icon: '📊' },
+    tech:  { label: 'AI・プログラミング', desc: 'Claude API・機械学習・ソフトウェア開発のノウハウを共有。',    color: 'var(--cat-tech)',  icon: '⚙️' },
+    essay: { label: '日々のエッセイ',     desc: '日常の観察・思考の断片・ライフスタイルについての記録。',     color: 'var(--cat-essay)', icon: '✍️' },
+    novel: { label: '小説・創作',         desc: '短編小説・インタラクティブ作品・詩など、創作物の発表の場。', color: 'var(--cat-novel)', icon: '📖' },
+  };
+
+  const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+  const slugs = [...new Set(allPosts.map(p => p.data.categorySlug))];
+
+  return slugs.map(slug => ({
+    params: { category: slug },
+    props: {
+      posts: allPosts
+        .filter(p => p.data.categorySlug === slug)
+        .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()),
+      meta: categoryMeta[slug] ?? { label: slug, desc: '', color: 'var(--color-accent)', icon: '📁' },
+    },
+  }));
+};
+
+const { posts, meta } = Astro.props;
+const { category } = Astro.params;
+---
+
+<BaseLayout
+  title={`${meta.label} の記事一覧`}
+  description={meta.desc}
+>
+  <div class="category-page container">
+    <!-- Category Header -->
+    <header class="cat-header" style={`--cat-color: ${meta.color}`}>
+      <div class="cat-icon">{meta.icon}</div>
+      <div class="cat-header-text">
+        <div class="category-badge" data-category={category}>{meta.label}</div>
+        <h1 class="cat-title">{meta.label}</h1>
+        <p class="cat-desc">{meta.desc}</p>
+        <p class="cat-count">{posts.length} 件の記事</p>
+      </div>
+    </header>
+
+    <AdPlaceholder slot="header" />
+
+    <!-- Posts Grid -->
+    {posts.length > 0 ? (
+      <div class="posts-grid">
+        {posts.map(post => (
+          <PostCard post={post} />
+        ))}
+      </div>
+    ) : (
+      <div class="empty">
+        <p>このカテゴリの記事はまだありません。</p>
+        <a href="/blog" class="btn btn-outline">全記事一覧へ</a>
+      </div>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+.category-page {
+  padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
+}
+
+.cat-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xl);
+  margin-bottom: var(--space-2xl);
+  padding: var(--space-2xl);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--cat-color, var(--color-accent));
+}
+
+.cat-icon {
+  font-size: 3rem;
+  flex-shrink: 0;
+}
+
+.cat-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.cat-title {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 700;
+}
+
+.cat-desc {
+  color: var(--color-text-muted);
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 600px;
+}
+
+.cat-count {
+  font-size: 0.85rem;
+  color: var(--color-text-faint);
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+.empty {
+  text-align: center;
+  padding: var(--space-3xl);
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 1024px) {
+  .posts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .cat-header { flex-direction: column; }
+}
+@media (max-width: 600px) {
+  .posts-grid { grid-template-columns: 1fr; }
+}
+</style>

@@ -1,0 +1,603 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="雨と手紙、それから — Interactive Novel Demo"
+  description="スクロール連動アニメーションを使ったインタラクティブ小説のデモページ。文字が現れ、消え、積み重なる——没入感のある読書体験。"
+>
+  <!-- 全画面小説ビューアー -->
+  <div class="novel-viewer" id="novel-viewer">
+    <!-- Progress -->
+    <div class="progress-container" aria-hidden="true">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <!-- Back Link -->
+    <a href="/novels" class="back-link" id="back-link">← 小説一覧</a>
+
+    <!-- Chapter Navigator -->
+    <nav class="chapter-nav" id="chapter-nav" aria-label="チャプターナビゲーション">
+      <button class="chapter-dot active" data-chapter="0" aria-label="プロローグ"></button>
+      <button class="chapter-dot" data-chapter="1" aria-label="第一章"></button>
+      <button class="chapter-dot" data-chapter="2" aria-label="第二章"></button>
+      <button class="chapter-dot" data-chapter="3" aria-label="第三章"></button>
+      <button class="chapter-dot" data-chapter="4" aria-label="エピローグ"></button>
+    </nav>
+
+    <!-- Story Sections -->
+    <div class="story-scroll" id="story-scroll">
+
+      <!-- Prologue -->
+      <section class="story-section" data-chapter="0" id="chapter-0">
+        <div class="scene scene--prologue">
+          <div class="scene-text">
+            <p class="text-fragment text-large" data-delay="0">雨の音が、</p>
+            <p class="text-fragment text-large" data-delay="200">記憶に似ている。</p>
+          </div>
+          <div class="scene-sub" data-delay="600">
+            <p class="text-fragment text-small">誰かに言ったことがある気がするけれど、<br>誰だったか思い出せない。</p>
+          </div>
+          <div class="scroll-hint" aria-hidden="true">
+            <span>scroll</span>
+            <div class="scroll-hint-arrow"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 1 -->
+      <section class="story-section" data-chapter="1" id="chapter-1">
+        <div class="scene scene--dark">
+          <div class="chapter-label">一</div>
+          <div class="scene-text">
+            <p class="text-fragment" data-delay="0">消印のない封筒が届いたのは、</p>
+            <p class="text-fragment" data-delay="150">十一月の最後の週のことだった。</p>
+          </div>
+          <div class="scene-detail" data-delay="400">
+            <p class="text-fragment">白い封筒。宛名は私の名前。</p>
+            <p class="text-fragment" data-delay="550">差出人の欄は——空白。</p>
+          </div>
+        </div>
+
+        <div class="scene scene--letter">
+          <div class="letter-card">
+            <div class="letter-lines">
+              <p class="letter-text text-fragment" data-delay="0">「まだ、そこにいますか」</p>
+            </div>
+          </div>
+          <p class="text-fragment scene-annotation" data-delay="400">それだけだった。</p>
+        </div>
+      </section>
+
+      <!-- Chapter 2 -->
+      <section class="story-section" data-chapter="2" id="chapter-2">
+        <div class="scene scene--memory">
+          <div class="chapter-label">二</div>
+          <div class="scene-text">
+            <p class="text-fragment" data-delay="0">三年前、私はある人に手紙を書いた。</p>
+          </div>
+          <div class="scene-detail" data-delay="300">
+            <p class="text-fragment">何度も書いて、何度も破った。</p>
+            <p class="text-fragment" data-delay="450">最終的に出来上がった文章を封筒に入れて、</p>
+            <p class="text-fragment" data-delay="600">机の引き出しの奥に仕舞った。</p>
+          </div>
+        </div>
+
+        <div class="scene scene--unsent">
+          <div class="unsent-envelope">
+            <div class="envelope-body">
+              <div class="envelope-flap"></div>
+              <div class="envelope-content">
+                <p class="text-fragment envelope-text" data-delay="0">
+                  「もう会えなくなる前に、<br>一度だけ言いたいことがある」
+                </p>
+              </div>
+            </div>
+            <p class="text-fragment envelope-note" data-delay="400">送らなかった。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chapter 3 -->
+      <section class="story-section" data-chapter="3" id="chapter-3">
+        <div class="scene scene--night">
+          <div class="chapter-label">三</div>
+          <div class="scene-text">
+            <p class="text-fragment" data-delay="0">その夜、雨が降った。</p>
+          </div>
+          <div class="rain-visual" aria-hidden="true" id="rain-visual">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <div class="raindrop" style={`--i: ${i}`}></div>
+            ))}
+          </div>
+        </div>
+
+        <div class="scene scene--reply">
+          <div class="scene-text">
+            <p class="text-fragment" data-delay="0">私は返事を書こうとした。</p>
+            <p class="text-fragment" data-delay="200">何度も書いて、何度も丸めた。</p>
+          </div>
+          <div class="blank-paper">
+            <div class="paper-body text-fragment" data-delay="500">
+              <div class="paper-lines">
+                <div class="paper-line"></div>
+                <div class="paper-line"></div>
+                <div class="paper-line"></div>
+              </div>
+            </div>
+          </div>
+          <p class="text-fragment scene-annotation" data-delay="800">最終的に、白紙の便箋を封筒に入れた。</p>
+        </div>
+      </section>
+
+      <!-- Epilogue -->
+      <section class="story-section" data-chapter="4" id="chapter-4">
+        <div class="scene scene--epilogue">
+          <div class="chapter-label">後記</div>
+          <div class="scene-text">
+            <p class="text-fragment text-large" data-delay="0">雨の音が記憶に似ているのは、</p>
+            <p class="text-fragment text-large" data-delay="300">どちらも「止んだ後でしか、</p>
+            <p class="text-fragment text-large" data-delay="600">降っていたことに気づかない」</p>
+            <p class="text-fragment text-large" data-delay="900">からだと思う。</p>
+          </div>
+          <div class="epilogue-end text-fragment" data-delay="1400">
+            <span class="end-mark">— 了 —</span>
+          </div>
+          <div class="epilogue-actions text-fragment" data-delay="1800">
+            <a href="/blog/novel-rain-and-letters" class="btn btn-outline">テキスト版を読む</a>
+            <a href="/novels" class="btn btn-primary">小説一覧へ</a>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+/* ============================================================
+   Novel Viewer — Full Screen Immersive
+   ============================================================ */
+
+/* Hide global header/footer in novel mode */
+:global(.site-header), :global(.site-footer) {
+  display: none;
+}
+
+#main-content {
+  padding: 0;
+}
+
+.novel-viewer {
+  position: relative;
+  min-height: 100vh;
+  background: #050508;
+  color: #e8e4f0;
+  overflow-x: hidden;
+}
+
+/* Progress */
+.progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255,255,255,0.05);
+  z-index: 100;
+}
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #a96ec9, #6ec9a9);
+  width: 0%;
+  transition: width 0.2s ease;
+}
+
+/* Back link */
+.back-link {
+  position: fixed;
+  top: 20px;
+  left: 24px;
+  z-index: 100;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.3);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.back-link:hover { color: rgba(255,255,255,0.8); }
+
+/* Chapter dots */
+.chapter-nav {
+  position: fixed;
+  right: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.chapter-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+.chapter-dot.active {
+  background: #a96ec9;
+  transform: scale(1.5);
+}
+.chapter-dot:hover { background: rgba(255,255,255,0.5); }
+
+/* ============================================================
+   Story Sections
+   ============================================================ */
+.story-scroll {
+  position: relative;
+}
+
+.story-section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Individual Scenes */
+.scene {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 40px;
+  text-align: center;
+  position: relative;
+}
+
+/* Text Fragments — revealed by JS */
+.text-fragment {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.text-fragment.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.text-large {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: 0.05em;
+  color: #e8e4f0;
+  margin-bottom: 0.5em;
+}
+
+.text-small {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(0.95rem, 2vw, 1.2rem);
+  color: rgba(232,228,240,0.6);
+  line-height: 2;
+}
+
+.scene-text {
+  margin-bottom: 2rem;
+}
+.scene-text p {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  line-height: 2;
+  color: #e8e4f0;
+  margin-bottom: 0;
+}
+
+.scene-detail {
+  margin-top: 2rem;
+}
+.scene-detail p {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(0.9rem, 2vw, 1.1rem);
+  color: rgba(232,228,240,0.65);
+  line-height: 2;
+  margin-bottom: 0;
+}
+
+.scene-annotation {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 0.95rem;
+  color: rgba(232,228,240,0.4);
+  margin-top: 2rem;
+}
+
+/* Chapter Label */
+.chapter-label {
+  position: absolute;
+  top: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(169,110,201,0.5);
+  font-family: sans-serif;
+}
+
+/* ============================================================
+   Scene Styles
+   ============================================================ */
+
+/* Prologue */
+.scene--prologue {
+  background: radial-gradient(ellipse at center, #0d0a18 0%, #050508 70%);
+}
+
+/* Dark scene */
+.scene--dark {
+  background: linear-gradient(to bottom, #050508, #0a0812);
+}
+
+/* Letter */
+.scene--letter {
+  background: #070510;
+}
+.letter-card {
+  width: min(400px, 80vw);
+  padding: 3rem 2.5rem;
+  border: 1px solid rgba(169,110,201,0.3);
+  border-radius: 4px;
+  background: rgba(169,110,201,0.05);
+  margin-bottom: 2rem;
+}
+.letter-text {
+  font-family: 'Noto Serif JP', serif;
+  font-size: clamp(1.2rem, 3vw, 1.75rem);
+  color: rgba(232,228,240,0.9);
+  line-height: 2;
+  margin-bottom: 0 !important;
+}
+
+/* Memory */
+.scene--memory { background: linear-gradient(to bottom, #0a0812, #050508); }
+
+/* Unsent letter */
+.scene--unsent { background: #050508; }
+.unsent-envelope {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+.envelope-body {
+  width: min(320px, 75vw);
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 2px;
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.envelope-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.02),
+    rgba(255,255,255,0.0)
+  );
+  border-bottom: 1px dashed rgba(255,255,255,0.08);
+}
+.envelope-text {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 0.95rem;
+  color: rgba(232,228,240,0.5);
+  line-height: 2;
+  margin-bottom: 0 !important;
+}
+.envelope-note {
+  font-size: 0.85rem;
+  color: rgba(232,228,240,0.3);
+  font-family: 'Noto Serif JP', serif;
+}
+
+/* Night / Rain scene */
+.scene--night {
+  background: #020206;
+  overflow: hidden;
+}
+.rain-visual {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.raindrop {
+  position: absolute;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(110,201,169,0.4));
+  top: -60px;
+  left: calc(3% + var(--i, 0) * 5.2%);
+  height: calc(40px + var(--i, 0) * 4px);
+  animation: rain calc(1.2s + var(--i, 0) * 0.08s) calc(var(--i, 0) * 0.15s) linear infinite;
+  opacity: 0;
+}
+.rain-visual.active .raindrop { opacity: 1; }
+@keyframes rain {
+  0% { transform: translateY(-60px); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 0.4; }
+  100% { transform: translateY(105vh); opacity: 0; }
+}
+
+/* Reply scene */
+.scene--reply { background: linear-gradient(to bottom, #020206, #050508); }
+.blank-paper {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
+.paper-body {
+  width: min(280px, 70vw);
+  padding: 2rem;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 2px;
+}
+.paper-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.paper-line {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+}
+
+/* Epilogue */
+.scene--epilogue {
+  background: radial-gradient(ellipse at center, #0d0a18 0%, #050508 80%);
+}
+.epilogue-end {
+  margin: 3rem 0 2rem;
+}
+.end-mark {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 0.85rem;
+  color: rgba(169,110,201,0.5);
+  letter-spacing: 0.4em;
+}
+.epilogue-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Scroll Hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 48px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.2);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: scrollHintFade 2s ease-in-out infinite;
+}
+.scroll-hint-arrow {
+  width: 1px;
+  height: 32px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+  animation: scrollArrowDrop 2s ease-in-out infinite;
+}
+@keyframes scrollHintFade {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+@keyframes scrollArrowDrop {
+  0% { transform: scaleY(0); transform-origin: top; }
+  50% { transform: scaleY(1); transform-origin: top; }
+  51% { transform: scaleY(1); transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* Mobile tweaks */
+@media (max-width: 600px) {
+  .chapter-nav { display: none; }
+  .back-link { font-size: 0.75rem; }
+  .scene { padding: 60px 24px; }
+}
+</style>
+
+<script>
+// ============================================================
+// Progress bar
+// ============================================================
+const progressBar = document.getElementById('progress-bar');
+function updateProgress() {
+  const scrollTop = window.scrollY;
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+  if (progressBar) progressBar.style.width = `${pct}%`;
+}
+window.addEventListener('scroll', updateProgress, { passive: true });
+
+// ============================================================
+// Chapter dot active state
+// ============================================================
+const sections = document.querySelectorAll<HTMLElement>('.story-section');
+const dots = document.querySelectorAll<HTMLButtonElement>('.chapter-dot');
+
+dots.forEach(dot => {
+  dot.addEventListener('click', () => {
+    const idx = Number(dot.dataset.chapter);
+    const target = document.getElementById(`chapter-${idx}`);
+    target?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+
+const chapterObserver = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const chapter = (entry.target as HTMLElement).dataset.chapter;
+        dots.forEach(d => {
+          d.classList.toggle('active', d.dataset.chapter === chapter);
+        });
+      }
+    });
+  },
+  { threshold: 0.4 }
+);
+sections.forEach(s => chapterObserver.observe(s));
+
+// ============================================================
+// Text fragment reveal (IntersectionObserver with delay)
+// ============================================================
+const fragments = document.querySelectorAll<HTMLElement>('.text-fragment');
+
+const revealObserver = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target as HTMLElement;
+        const delay = Number(el.dataset.delay ?? 0);
+        setTimeout(() => el.classList.add('revealed'), delay);
+        revealObserver.unobserve(el);
+      }
+    });
+  },
+  { threshold: 0.15, rootMargin: '0px 0px -8% 0px' }
+);
+fragments.forEach(f => revealObserver.observe(f));
+
+// ============================================================
+// Rain animation trigger
+// ============================================================
+const rainScene = document.querySelector('.scene--night');
+const rainVisual = document.getElementById('rain-visual');
+
+const rainObserver = new IntersectionObserver(
+  entries => {
+    entries.forEach(entry => {
+      rainVisual?.classList.toggle('active', entry.isIntersecting);
+    });
+  },
+  { threshold: 0.3 }
+);
+if (rainScene) rainObserver.observe(rainScene);
+</script>

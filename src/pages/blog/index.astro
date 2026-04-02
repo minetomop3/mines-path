@@ -1,0 +1,144 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import AdPlaceholder from '../../components/AdPlaceholder.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const categories = [
+  { slug: 'all',   label: 'すべて' },
+  { slug: 'mba',   label: '経営学/MBA' },
+  { slug: 'tech',  label: 'AI・プログラミング' },
+  { slug: 'essay', label: 'エッセイ' },
+  { slug: 'novel', label: '小説・創作' },
+];
+---
+
+<BaseLayout
+  title="Blog — 全記事一覧"
+  description="MBA経営学、AI・プログラミング、エッセイ、小説——すべての記事を最新順に掲載しています。"
+>
+  <div class="blog-index container">
+    <header class="page-header">
+      <h1 class="page-title">Blog</h1>
+      <p class="page-desc">全 {allPosts.length} 件の記事</p>
+    </header>
+
+    <!-- Category Filter -->
+    <nav class="filter-tabs" aria-label="カテゴリフィルター">
+      {categories.map(cat => (
+        <button
+          class="filter-tab"
+          data-category={cat.slug}
+          aria-pressed={cat.slug === 'all' ? 'true' : 'false'}
+        >
+          {cat.label}
+        </button>
+      ))}
+    </nav>
+
+    <!-- Posts Grid -->
+    <div class="posts-grid" id="posts-grid">
+      {allPosts.map(post => (
+        <div class="post-item" data-category={post.data.categorySlug}>
+          <PostCard post={post} />
+        </div>
+      ))}
+    </div>
+
+    <div class="container">
+      <AdPlaceholder slot="footer" label="広告" />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.blog-index {
+  padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
+}
+
+.page-header {
+  margin-bottom: var(--space-2xl);
+}
+.page-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+}
+.page-desc {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.filter-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-2xl);
+  padding-bottom: var(--space-xl);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.filter-tab {
+  padding: var(--space-xs) var(--space-md);
+  border-radius: 100px;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  transition: all var(--transition-fast);
+}
+.filter-tab:hover {
+  color: var(--color-text);
+  border-color: var(--color-border-light);
+}
+.filter-tab[aria-pressed="true"] {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.posts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+}
+
+.post-item.hidden {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .posts-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 600px) {
+  .posts-grid { grid-template-columns: 1fr; }
+}
+</style>
+
+<script>
+const tabs = document.querySelectorAll<HTMLButtonElement>('.filter-tab');
+const items = document.querySelectorAll<HTMLElement>('.post-item');
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const selected = tab.dataset.category ?? 'all';
+
+    tabs.forEach(t => t.setAttribute('aria-pressed', 'false'));
+    tab.setAttribute('aria-pressed', 'true');
+
+    items.forEach(item => {
+      if (selected === 'all' || item.dataset.category === selected) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+    });
+  });
+});
+</script>

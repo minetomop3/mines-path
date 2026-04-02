@@ -1,0 +1,298 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const novels = (await getCollection('blog', ({ data }) => !data.draft && data.isNovel === true))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// isNovel フラグが立っていない小説カテゴリの記事も含める
+const novelCategoryPosts = (await getCollection('blog', ({ data }) =>
+  !data.draft && data.categorySlug === 'novel'
+)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 重複排除
+const allNovels = [...new Map(
+  [...novels, ...novelCategoryPosts].map(p => [p.slug, p])
+).values()];
+---
+
+<BaseLayout
+  title="Interactive Novels — 動く小説"
+  description="スクロールアニメーションで語られる没入感のある物語。読むのではなく体験する、新しい小説の形。"
+>
+  <div class="novels-page">
+    <!-- Hero -->
+    <section class="novels-hero">
+      <div class="content-container">
+        <div class="novels-hero-tag">Interactive Novels</div>
+        <h1 class="novels-hero-title">
+          <span class="novels-hero-title-jp">動く小説</span>
+        </h1>
+        <p class="novels-hero-desc">
+          スクロールに呼応して言葉が現れる、没入感のある物語の体験。<br />
+          読むのではなく、<em>感じる</em>小説の世界へ。
+        </p>
+      </div>
+      <div class="novels-hero-bg" aria-hidden="true">
+        <div class="novels-particles">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div class="particle" style={`--i: ${i}`}></div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Novel List -->
+    <section class="novels-list container">
+      {allNovels.length > 0 ? (
+        <div class="novels-grid">
+          {allNovels.map(novel => (
+            <a href={`/novels/${novel.slug}`} class="novel-card">
+              <div class="novel-card-bg" aria-hidden="true">
+                <div class="novel-card-lines">
+                  {Array.from({ length: 5 }).map(() => (
+                    <div class="novel-card-line"></div>
+                  ))}
+                </div>
+              </div>
+              <div class="novel-card-content">
+                <div class="novel-card-meta">
+                  <time datetime={novel.data.pubDate.toISOString()}>
+                    {novel.data.pubDate.toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </time>
+                </div>
+                <h2 class="novel-card-title">{novel.data.title}</h2>
+                <p class="novel-card-desc">{novel.data.description}</p>
+                <span class="novel-card-cta">読む →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <div class="novels-empty">
+          <p>小説は準備中です。しばらくお待ちください。</p>
+          <a href="/blog/novel-rain-and-letters" class="btn btn-outline">サンプルを読む</a>
+        </div>
+      )}
+    </section>
+
+    <!-- Sample CTA -->
+    <section class="novels-sample container">
+      <div class="sample-card">
+        <div class="sample-text">
+          <h2>インタラクティブ体験を試してみる</h2>
+          <p>スクロール連動アニメーションのデモページをご用意しています。</p>
+          <a href="/novels/demo" class="btn btn-primary">デモを体験する</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+/* Hero */
+.novels-hero {
+  position: relative;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+.novels-hero .content-container {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-3xl) var(--space-lg);
+}
+
+.novels-hero-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cat-novel);
+  margin-bottom: var(--space-xl);
+}
+
+.novels-hero-title {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: var(--space-xl);
+}
+.novels-hero-title-jp {
+  font-family: var(--font-serif);
+  color: var(--color-text);
+  position: relative;
+}
+.novels-hero-title-jp::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cat-novel), transparent);
+}
+
+.novels-hero-desc {
+  font-size: 1.1rem;
+  color: var(--color-text-muted);
+  line-height: 1.9;
+  max-width: 500px;
+}
+.novels-hero-desc em { font-style: italic; color: var(--cat-novel); }
+
+/* Background particles */
+.novels-hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.novels-particles {
+  position: absolute;
+  inset: 0;
+}
+.particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: var(--cat-novel);
+  border-radius: 50%;
+  opacity: 0;
+  animation: particleFloat calc(4s + var(--i, 0) * 0.5s) calc(var(--i, 0) * 0.3s) ease-in-out infinite;
+  left: calc(5% + var(--i, 0) * 8%);
+  top: calc(20% + (var(--i, 0) % 3) * 20%);
+}
+@keyframes particleFloat {
+  0%, 100% { opacity: 0; transform: translateY(0); }
+  50% { opacity: 0.6; transform: translateY(-30px); }
+}
+
+/* List */
+.novels-list {
+  padding: var(--space-2xl) var(--space-lg);
+}
+
+.novels-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xl);
+}
+
+.novel-card {
+  position: relative;
+  display: block;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  min-height: 280px;
+  transition: border-color var(--transition-md), transform var(--transition-md), box-shadow var(--transition-md);
+}
+.novel-card:hover {
+  border-color: var(--cat-novel);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+}
+
+.novel-card-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--color-surface);
+  padding: var(--space-xl);
+  display: flex;
+  align-items: flex-end;
+}
+.novel-card-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  opacity: 0.15;
+}
+.novel-card-line {
+  height: 1px;
+  background: var(--cat-novel);
+}
+.novel-card-line:nth-child(2) { width: 70%; }
+.novel-card-line:nth-child(3) { width: 90%; }
+.novel-card-line:nth-child(4) { width: 55%; }
+.novel-card-line:nth-child(5) { width: 80%; }
+
+.novel-card-content {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  height: 100%;
+}
+
+.novel-card-meta {
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
+}
+
+.novel-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-text);
+}
+.novel-card:hover .novel-card-title { color: var(--cat-novel); }
+
+.novel-card-desc {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  line-height: 1.7;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+
+.novel-card-cta {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--cat-novel);
+  margin-top: auto;
+}
+
+/* Sample CTA */
+.novels-sample {
+  padding: 0 var(--space-lg) var(--space-3xl);
+}
+.sample-card {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--cat-novel) 15%, var(--color-surface)),
+    var(--color-surface)
+  );
+  border: 1px solid color-mix(in srgb, var(--cat-novel) 30%, var(--color-border));
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+}
+.sample-card h2 { font-size: 1.375rem; margin-bottom: var(--space-md); }
+.sample-card p { color: var(--color-text-muted); margin-bottom: var(--space-xl); }
+
+.novels-empty {
+  text-align: center;
+  padding: var(--space-3xl);
+  color: var(--color-text-muted);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
+@media (max-width: 768px) {
+  .novels-grid { grid-template-columns: 1fr; }
+}
+</style>
