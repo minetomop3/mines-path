@@ -22,7 +22,7 @@ const formattedDate = pubDate.toLocaleDateString('ja-JP', {
     <!-- Hero Image (記事に画像がある場合) -->
     {heroImage && (
       <div class="post-hero-image">
-        <img src={heroImage} alt={title} loading="eager" />
+        <img src={`${import.meta.env.BASE_URL}${heroImage.replace(/^\//, '')}`} alt={title} loading="eager" />
       </div>
     )}
 
