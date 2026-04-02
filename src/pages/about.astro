@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { url } from '../utils/url';
 ---
 
 <BaseLayout
   title="About"
-  description="このサイトについて、筆者プロフィール、発信テーマについてご紹介します。"
+  description="mines-path について、筆者プロフィール、発信テーマをご紹介します。"
 >
   <div class="about-page">
     <div class="about-hero">
@@ -15,27 +16,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
 
     <div class="content-container about-content">
-      <!-- Profile -->
       <section class="about-section">
         <div class="profile-card">
           <div class="profile-avatar" aria-hidden="true">◈</div>
           <div class="profile-info">
-            <h2 class="profile-name">筆者名</h2>
+            <h2 class="profile-name">みね</h2>
             <p class="profile-bio">
               MBA取得後、IT企業にてプロダクトマネジメントに従事。
               ビジネス戦略の思考と、AIを活用したプロダクト開発の実務を組み合わせながら、
               自分の言葉で世界を解釈し続けることを大切にしています。
             </p>
             <p class="profile-bio">
-              このサイトは、頭の中に溜まった思考の断片を整理・発信する場所です。
-              経営学の論理、技術の最前線、日常の観察、そして小説という形の創造——
-              それぞれが時に交差し、時に矛盾しながら、ひとつの人格を形作っています。
+              このサイトは「豊かさを創る、自分と道」をテーマに、
+              頭の中に溜まった思考を整理・発信する場所です。
+              経営学の論理、技術の最前線、日常の観察、そして小説という創造——
+              それぞれが交差するところに、あなたにとっての豊かさのヒントがあることを願っています。
             </p>
           </div>
         </div>
       </section>
 
-      <!-- Themes -->
       <section class="about-section">
         <h2 class="section-heading">発信テーマ</h2>
         <div class="themes-grid">
@@ -62,7 +62,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
       </section>
 
-      <!-- Site Info -->
       <section class="about-section">
         <h2 class="section-heading">サイトについて</h2>
         <div class="info-list">
@@ -76,140 +75,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div class="info-item">
             <dt>デザインコンセプト</dt>
-            <dd>知性とクリエイティビティの融合——プレミアムなダークテーマ</dd>
-          </div>
-          <div class="info-item">
-            <dt>お問い合わせ</dt>
-            <dd>SNS または下記フォームよりご連絡ください</dd>
+            <dd>豊かさを感じる、温かみのある白基調のプレミアムデザイン</dd>
           </div>
         </div>
       </section>
 
       <div class="about-cta">
-        <a href="/blog" class="btn btn-primary">記事を読む</a>
-        <a href="/novels" class="btn btn-outline">小説を体験する</a>
+        <a href={url('/blog')} class="btn btn-primary">記事を読む</a>
+        <a href={url('/novels')} class="btn btn-outline">小説を体験する</a>
       </div>
     </div>
   </div>
 </BaseLayout>
 
 <style>
-.about-hero {
-  background: linear-gradient(to bottom, var(--color-surface), transparent);
-  padding: var(--space-3xl) 0 var(--space-2xl);
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: var(--space-2xl);
-}
-
-.about-title {
-  font-size: clamp(2.5rem, 6vw, 4rem);
-  font-weight: 700;
-  margin-bottom: var(--space-sm);
-}
-
-.about-subtitle {
-  color: var(--color-text-muted);
-}
-
-.about-content {
-  padding-bottom: var(--space-3xl);
-}
-
-.about-section {
-  margin-bottom: var(--space-3xl);
-}
-
-.section-heading {
-  font-size: 1.375rem;
-  font-weight: 700;
-  margin-bottom: var(--space-xl);
-  padding-left: var(--space-md);
-  border-left: 3px solid var(--color-accent);
-}
-
-/* Profile */
-.profile-card {
-  display: flex;
-  gap: var(--space-2xl);
-  align-items: flex-start;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-2xl);
-}
-
-.profile-avatar {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: var(--color-surface-2);
-  border: 2px solid var(--color-accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  color: var(--color-accent);
-  flex-shrink: 0;
-}
-
-.profile-name {
-  font-size: 1.25rem;
-  margin-bottom: var(--space-md);
-}
-
-.profile-bio {
-  color: var(--color-text-muted);
-  line-height: 1.8;
-  margin-bottom: var(--space-md);
-}
-
-/* Themes */
-.themes-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-lg);
-}
-
-.theme-card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
-}
+.about-hero { background: linear-gradient(to bottom, var(--color-surface), transparent); padding: var(--space-3xl) 0 var(--space-2xl); border-bottom: 1px solid var(--color-border); margin-bottom: var(--space-2xl); }
+.about-title { font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 700; margin-bottom: var(--space-sm); }
+.about-subtitle { color: var(--color-text-muted); }
+.about-content { padding-bottom: var(--space-3xl); }
+.about-section { margin-bottom: var(--space-3xl); }
+.section-heading { font-size: 1.375rem; font-weight: 700; margin-bottom: var(--space-xl); padding-left: var(--space-md); border-left: 3px solid var(--color-accent); }
+.profile-card { display: flex; gap: var(--space-2xl); align-items: flex-start; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-2xl); }
+.profile-avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--color-accent-bg); border: 2px solid var(--color-accent); display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--color-accent); flex-shrink: 0; }
+.profile-name { font-size: 1.25rem; margin-bottom: var(--space-md); }
+.profile-bio { color: var(--color-text-muted); line-height: 1.8; margin-bottom: var(--space-md); }
+.themes-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
+.theme-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-xl); display: flex; flex-direction: column; gap: var(--space-sm); }
 .theme-icon { font-size: 1.75rem; }
 .theme-card h3 { font-size: 1rem; font-weight: 700; }
 .theme-card p { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.7; margin-bottom: 0; }
-
-/* Info List */
-.info-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-}
-.info-item {
-  display: grid;
-  grid-template-columns: 180px 1fr;
-  gap: var(--space-md);
-  padding-bottom: var(--space-md);
-  border-bottom: 1px solid var(--color-border);
-}
+.info-list { display: flex; flex-direction: column; gap: var(--space-md); background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-xl); }
+.info-item { display: grid; grid-template-columns: 180px 1fr; gap: var(--space-md); padding-bottom: var(--space-md); border-bottom: 1px solid var(--color-border); }
 .info-item:last-child { border-bottom: none; padding-bottom: 0; }
 .info-item dt { font-size: 0.85rem; font-weight: 600; color: var(--color-accent); }
 .info-item dd { font-size: 0.875rem; color: var(--color-text-muted); }
-
-.about-cta {
-  display: flex;
-  gap: var(--space-md);
-  flex-wrap: wrap;
-}
-
+.about-cta { display: flex; gap: var(--space-md); flex-wrap: wrap; }
 @media (max-width: 768px) {
   .profile-card { flex-direction: column; }
   .themes-grid { grid-template-columns: 1fr; }

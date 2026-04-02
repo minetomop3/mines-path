@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
 import AdPlaceholder from '../components/AdPlaceholder.astro';
 import { getCollection } from 'astro:content';
+import { url } from '../utils/url';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -39,8 +40,8 @@ const latestPosts = allPosts.slice(0, 6);
         <strong>mines-path</strong>へようこそ。
       </p>
       <div class="hero-actions">
-        <a href="/blog" class="btn btn-primary">全記事を読む</a>
-        <a href="/about" class="btn btn-outline">About</a>
+        <a href={url('/blog')} class="btn btn-primary">全記事を読む</a>
+        <a href={url('/about')} class="btn btn-outline">About</a>
       </div>
       <div class="hero-stats">
         <div class="stat"><span class="stat-num">4,141</span><span class="stat-label">PV</span></div>
@@ -59,7 +60,7 @@ const latestPosts = allPosts.slice(0, 6);
     <h2 class="section-title">カテゴリ</h2>
     <div class="category-grid">
       {categories.map(cat => (
-        <a href={`/category/${cat.slug}`} class="category-card" style={`--cat: ${cat.color}`}>
+        <a href={url(`/category/${cat.slug}`)} class="category-card" style={`--cat: ${cat.color}`}>
           <div class="category-icon">{cat.icon}</div>
           <h3 class="category-name">{cat.label}</h3>
           <p class="category-desc">{cat.desc}</p>
@@ -75,7 +76,7 @@ const latestPosts = allPosts.slice(0, 6);
   <section class="section-featured container">
     <div class="section-header">
       <h2 class="section-title">人気記事</h2>
-      <a href="/blog" class="view-all">すべて見る →</a>
+      <a href={url('/blog')} class="view-all">すべて見る →</a>
     </div>
     <div class="featured-grid">
       {popularPosts.map(post => post && (
@@ -95,7 +96,7 @@ const latestPosts = allPosts.slice(0, 6);
   <section class="section-latest container">
     <div class="section-header">
       <h2 class="section-title">最新記事</h2>
-      <a href="/blog" class="view-all">すべて見る →</a>
+      <a href={url('/blog')} class="view-all">すべて見る →</a>
     </div>
     <div class="posts-grid">
       {latestPosts.map(post => (
@@ -116,7 +117,7 @@ const latestPosts = allPosts.slice(0, 6);
           スクロールに連動したアニメーションで語られる物語。<br />
           読むのではなく、「体験する」小説の世界へ。
         </p>
-        <a href="/novels" class="btn btn-primary">小説を読む</a>
+        <a href={url('/novels')} class="btn btn-primary">小説を読む</a>
       </div>
       <div class="novels-cta-visual" aria-hidden="true">
         <div class="novel-preview">

@@ -1,11 +1,13 @@
 ---
+import { url } from '../utils/url';
+
 const navLinks = [
-  { href: '/blog', label: 'Blog' },
-  { href: '/category/mba', label: '経営学' },
-  { href: '/category/tech', label: 'AI・Tech' },
-  { href: '/category/essay', label: 'エッセイ' },
-  { href: '/novels', label: '小説' },
-  { href: '/about', label: 'About' },
+  { href: url('/blog'), label: 'Blog' },
+  { href: url('/category/mba'), label: '経営学' },
+  { href: url('/category/tech'), label: 'AI・Tech' },
+  { href: url('/category/essay'), label: 'エッセイ' },
+  { href: url('/novels'), label: '小説' },
+  { href: url('/about'), label: 'About' },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -13,7 +15,7 @@ const currentPath = Astro.url.pathname;
 
 <header class="site-header">
   <div class="header-inner container">
-    <a href="/" class="logo" aria-label="ホームへ">
+    <a href={url('/')} class="logo" aria-label="ホームへ">
       <span class="logo-mark">◈</span>
       <span class="logo-text">
         <span class="logo-main">mines-path</span>
@@ -69,55 +71,23 @@ const currentPath = Astro.url.pathname;
   gap: var(--space-xl);
 }
 
-/* Logo */
 .logo {
   display: flex;
   align-items: center;
   gap: var(--space-sm);
   color: var(--color-text);
   font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.01em;
   white-space: nowrap;
   text-decoration: none;
   transition: color var(--transition-fast);
 }
 .logo:hover { color: var(--color-accent); }
+.logo-mark { font-size: 1.3rem; color: var(--color-accent); }
+.logo-text { display: flex; flex-direction: column; gap: 0; line-height: 1.1; }
+.logo-main { font-size: 1rem; font-weight: 700; letter-spacing: 0.02em; }
+.logo-sub { font-size: 0.62rem; font-weight: 400; color: var(--color-text-faint); letter-spacing: 0.04em; }
 
-.logo-mark {
-  font-size: 1.3rem;
-  color: var(--color-accent);
-}
-
-.logo-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  line-height: 1.1;
-}
-.logo-main {
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-}
-.logo-sub {
-  font-size: 0.62rem;
-  font-weight: 400;
-  color: var(--color-text-faint);
-  letter-spacing: 0.04em;
-}
-
-@media (max-width: 480px) {
-  .logo-sub { display: none; }
-}
-
-/* Desktop Nav */
-.nav-desktop {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
+.nav-desktop { display: flex; align-items: center; gap: 2px; }
 .nav-link {
   padding: 6px var(--space-md);
   border-radius: var(--radius-sm);
@@ -127,17 +97,9 @@ const currentPath = Astro.url.pathname;
   text-decoration: none;
   transition: color var(--transition-fast), background var(--transition-fast);
 }
-.nav-link:hover {
-  color: var(--color-text);
-  background: var(--color-surface);
-}
-.nav-link.active {
-  color: var(--color-accent);
-  background: var(--color-accent-bg);
-  font-weight: 600;
-}
+.nav-link:hover { color: var(--color-text); background: var(--color-surface); }
+.nav-link.active { color: var(--color-accent); background: var(--color-accent-bg); font-weight: 600; }
 
-/* Hamburger */
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -151,56 +113,25 @@ const currentPath = Astro.url.pathname;
   padding: 4px;
   border-radius: var(--radius-sm);
 }
-.nav-toggle span {
-  display: block;
-  height: 2px;
-  background: var(--color-text-muted);
-  border-radius: 1px;
-  transition: all var(--transition-md);
-}
+.nav-toggle span { display: block; height: 2px; background: var(--color-text-muted); border-radius: 1px; transition: all var(--transition-md); }
 .nav-toggle:hover span { background: var(--color-text); }
 
-/* Mobile Nav */
-.nav-mobile {
-  display: flex;
-  flex-direction: column;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height var(--transition-slow);
-  background: var(--color-bg);
-}
-.nav-mobile.open {
-  max-height: 400px;
-  border-bottom: 1px solid var(--color-border);
-}
-.nav-mobile-link {
-  padding: var(--space-md) var(--space-lg);
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  text-decoration: none;
-  border-top: 1px solid var(--color-border);
-  transition: color var(--transition-fast), background var(--transition-fast);
-}
-.nav-mobile-link:hover {
-  color: var(--color-text);
-  background: var(--color-surface);
-}
-.nav-mobile-link.active {
-  color: var(--color-accent);
-  background: var(--color-accent-bg);
-}
+.nav-mobile { display: flex; flex-direction: column; max-height: 0; overflow: hidden; transition: max-height var(--transition-slow); background: var(--color-bg); }
+.nav-mobile.open { max-height: 400px; border-bottom: 1px solid var(--color-border); }
+.nav-mobile-link { padding: var(--space-md) var(--space-lg); font-size: 1rem; font-weight: 500; color: var(--color-text-muted); text-decoration: none; border-top: 1px solid var(--color-border); transition: color var(--transition-fast), background var(--transition-fast); }
+.nav-mobile-link:hover { color: var(--color-text); background: var(--color-surface); }
+.nav-mobile-link.active { color: var(--color-accent); background: var(--color-accent-bg); }
 
 @media (max-width: 720px) {
   .nav-desktop { display: none; }
   .nav-toggle { display: flex; }
+  .logo-sub { display: none; }
 }
 </style>
 
 <script>
 const toggle = document.querySelector('.nav-toggle');
 const navMobile = document.querySelector('.nav-mobile');
-
 toggle?.addEventListener('click', () => {
   const isOpen = navMobile?.classList.toggle('open');
   toggle.setAttribute('aria-expanded', String(isOpen));
