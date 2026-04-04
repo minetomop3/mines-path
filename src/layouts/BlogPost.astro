@@ -10,7 +10,7 @@ interface Props {
 
 const { post } = Astro.props;
 const { title, description, pubDate, category, categorySlug, tags, keywords, heroImage } = post.data;
-const imgSrc = heroImage ? `${import.meta.env.BASE_URL.replace(/\/$/, '')}${heroImage}` : null;
+const imgSrc = heroImage ?? null;
 
 const formattedDate = pubDate.toLocaleDateString('ja-JP', {
   year: 'numeric', month: 'long', day: 'numeric',
