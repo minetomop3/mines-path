@@ -12,6 +12,9 @@ keywords: "歩く, ウォーキング, 健康, 脳科学, 創造性, 習慣, デ
 draft: false
 isNovel: false
 originalSource: "original"
+related:
+  - "essay-morning-routine"
+  - "na7a348f6a1d8"
 ---
 
 ## 「歩く」は最強のパフォーマンス向上策

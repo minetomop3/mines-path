@@ -15,6 +15,7 @@ const blog = defineCollection({
     originalFile: z.string().optional(),
     isNovel: z.boolean().default(false),
     heroImage: z.string().optional(),
+    related: z.array(z.string()).default([]),
   }),
 });
 

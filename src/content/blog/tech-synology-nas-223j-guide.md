@@ -12,6 +12,9 @@ keywords: "Synology NAS, DS223j, NAS活用, Obsidian, ホームサーバー, バ
 draft: false
 isNovel: false
 originalSource: "original"
+related:
+  - "tech-obsidian-pkm-guide"
+  - "nba775177db94"
 ---
 
 ## はじめに：なぜ今、自宅NASなのか

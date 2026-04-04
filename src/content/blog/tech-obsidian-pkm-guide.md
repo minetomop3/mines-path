@@ -12,6 +12,9 @@ keywords: "Obsidian, PKM, ノート術, 第二の脳, Zettelkasten, Synology NAS
 draft: false
 isNovel: false
 originalSource: "original"
+related:
+  - "tech-synology-nas-223j-guide"
+  - "nba775177db94"
 ---
 
 ## Obsidianとは何か

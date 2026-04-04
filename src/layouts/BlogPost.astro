@@ -1,6 +1,7 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import AdPlaceholder from '../components/AdPlaceholder.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
 import { url } from '../utils/url';
 import type { CollectionEntry } from 'astro:content';
 
@@ -61,6 +62,10 @@ const formattedDate = pubDate.toLocaleDateString('ja-JP', {
       <div class="prose article-body">
         <slot />
       </div>
+    </div>
+
+    <div class="content-container">
+      <RelatedPosts currentPost={post} />
     </div>
 
     <div class="content-container">

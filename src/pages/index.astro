@@ -15,8 +15,13 @@ const categories = [
   { slug: 'novel', label: '小説・創作',           desc: '短編小説・詩・インタラクティブ作品',       icon: '📖', color: 'var(--cat-novel)' },
 ];
 
-// 人気ピックアップ（ビュー数が多い記事を優先 → カテゴリ別最新）
-const popularSlugs = ['na7a348f6a1d8', 'n2a2e696fff23', 'n4773cc16ddfd', 'n52b01144bf65'];
+// 人気記事（Noteスキ数・PV数上位）
+const popularSlugs = [
+  'nba775177db94',        // ObsidianとSynology NASで知的生活が変わる（スキ多数）
+  'tech-obsidian-pkm-guide', // Obsidian完全入門
+  'essay-walking-life-change', // 歩くことが人生を変える
+  'na7a348f6a1d8',        // メルカリに学ぶ破壊なき市場創造（MBA人気）
+];
 const popularPosts = popularSlugs
   .map(slug => allPosts.find(p => p.slug === slug))
   .filter(Boolean);
@@ -46,6 +51,10 @@ const latestPosts = allPosts.slice(0, 6);
       <div class="hero-stats">
         <div class="stat"><span class="stat-num">60+</span><span class="stat-label">記事</span></div>
       </div>
+    </div>
+    <div class="scroll-hint" aria-hidden="true">
+      <span class="scroll-hint-text">scroll</span>
+      <div class="scroll-hint-arrow"></div>
     </div>
   </section>
 
@@ -227,6 +236,38 @@ const latestPosts = allPosts.slice(0, 6);
   width: 1px;
   height: 32px;
   background: var(--color-border);
+}
+
+/* Scroll hint */
+.scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: var(--space-xl);
+  color: var(--color-text-faint);
+  animation: scrollHintFade 2.5s ease-in-out infinite;
+}
+.scroll-hint-text {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.scroll-hint-arrow {
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, var(--color-accent), transparent);
+  animation: scrollArrowDrop 2.5s ease-in-out infinite;
+}
+@keyframes scrollHintFade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.9; }
+}
+@keyframes scrollArrowDrop {
+  0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+  40% { transform: scaleY(1); transform-origin: top; opacity: 1; }
+  41% { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
 }
 
 /* ============================================================
