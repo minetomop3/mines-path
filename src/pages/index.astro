@@ -4,6 +4,7 @@ import PostCard from '../components/PostCard.astro';
 import AdPlaceholder from '../components/AdPlaceholder.astro';
 import { getCollection } from 'astro:content';
 import { url } from '../utils/url';
+import { mbaGroups } from '../data/mbaGroups';
 
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
@@ -15,53 +16,23 @@ const categories = [
   { slug: 'novel', label: '小説・創作',           desc: '短編小説・詩・インタラクティブ作品',       icon: '📖', color: 'var(--cat-novel)' },
 ];
 
-// 人気記事（Noteスキ数・PV数上位）
+// 最新記事
+const latestPosts = allPosts.slice(0, 6);
+
+// 人気記事
 const popularSlugs = [
-  'nba775177db94',        // ObsidianとSynology NASで知的生活が変わる（スキ多数）
-  'tech-obsidian-pkm-guide', // Obsidian完全入門
-  'essay-walking-life-change', // 歩くことが人生を変える
-  'na7a348f6a1d8',        // メルカリに学ぶ破壊なき市場創造（MBA人気）
+  'nba775177db94',
+  'tech-obsidian-pkm-guide',
+  'essay-walking-life-change',
+  'na7a348f6a1d8',
 ];
 const popularPosts = popularSlugs
   .map(slug => allPosts.find(p => p.slug === slug))
   .filter(Boolean);
 
-const latestPosts = allPosts.slice(0, 6);
-
-// 経営学サブカテゴリ
+// 経営学サブカテゴリ（各グループ最大3件）
 const mbaPosts = allPosts.filter(p => p.data.categorySlug === 'mba');
-const mbaGroups = [
-  {
-    label: '競争戦略',
-    icon: '⚔️',
-    desc: 'ポーター・ミンツバーグ・差別化',
-    slugs: ['mba-porter-five-forces', 'n4681c3bc01ab', 'n45859a821102', 'n48ef026dbd1b', 'n9071ff98b421', 'n097fa10c04ba', 'n6d8a0080a432'],
-  },
-  {
-    label: 'イノベーション',
-    icon: '💡',
-    desc: '破壊的創造・ダイナミック・ケイパビリティ',
-    slugs: ['nb62042bc150b', 'ne3660b6e1485', 'nbfe10b3a7feb', 'na7a348f6a1d8', 'n8efe94da1fe9', 'n0cac995e6f4d', 'nff99ceb8215f'],
-  },
-  {
-    label: 'ブルーオーシャン',
-    icon: '🌊',
-    desc: '競争しない市場・非破壊的創造',
-    slugs: ['n8c7ff029e799', 'n2344189a528b', 'nbd658cd1ebd9', 'n665fb8df37c1', 'n619ffdc30bf9'],
-  },
-  {
-    label: 'マーケティング',
-    icon: '📣',
-    desc: 'コトラー・顧客価値・市場分析',
-    slugs: ['n900490d8c2c6', 'n64fc3a582e24', 'nb106c7d21d95', 'n5f7e470473a1', 'nae1d006a374e', 'nb206a28baf03'],
-  },
-  {
-    label: '組織・人材',
-    icon: '👥',
-    desc: 'モチベーション・知識経営・チーム',
-    slugs: ['n2a2e696fff23', 'ncbea71c42611', 'n462242610215', 'n995116d3fe55', 'nc3f3747b870c'],
-  },
-].map(group => ({
+const mbaGroupsWithPosts = mbaGroups.map(group => ({
   ...group,
   posts: group.slugs
     .map(s => mbaPosts.find(p => p.slug === s))
@@ -89,9 +60,6 @@ const mbaGroups = [
         <a href={url('/blog')} class="btn btn-primary">全記事を読む</a>
         <a href={url('/about')} class="btn btn-outline">About</a>
       </div>
-      <div class="hero-stats">
-        <div class="stat"><span class="stat-num">60+</span><span class="stat-label">記事</span></div>
-      </div>
     </div>
     <div class="scroll-hint" aria-hidden="true">
       <span class="scroll-hint-text">SCROLL</span>
@@ -102,111 +70,117 @@ const mbaGroups = [
   </section>
 
   <!-- ======================================================
-       Category Showcase
+       Latest Posts
   ====================================================== -->
-  <section class="section-categories container">
-    <h2 class="section-title">カテゴリ</h2>
-    <div class="category-grid">
-      {categories.map(cat => (
-        <a href={url(`/category/${cat.slug}`)} class="category-card" style={`--cat: ${cat.color}`}>
-          <div class="category-icon">{cat.icon}</div>
-          <h3 class="category-name">{cat.label}</h3>
-          <p class="category-desc">{cat.desc}</p>
-          <span class="category-arrow">→</span>
-        </a>
-      ))}
+  <section class="section-block section-latest">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">最新記事</h2>
+        <a href={url('/blog')} class="view-all">すべて見る →</a>
+      </div>
+      <div class="posts-grid">
+        {latestPosts.map(post => <PostCard post={post} />)}
+      </div>
     </div>
   </section>
 
   <!-- ======================================================
        Popular Posts
   ====================================================== -->
-  <section class="section-featured container">
-    <div class="section-header">
-      <h2 class="section-title">人気記事</h2>
-      <a href={url('/blog')} class="view-all">すべて見る →</a>
-    </div>
-    <div class="featured-grid">
-      {popularPosts.map(post => post && (
-        <PostCard post={post} featured={true} />
-      ))}
+  <section class="section-block section-popular">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">人気記事</h2>
+        <a href={url('/blog')} class="view-all">すべて見る →</a>
+      </div>
+      <div class="featured-grid">
+        {popularPosts.map(post => post && <PostCard post={post} featured={true} />)}
+      </div>
     </div>
   </section>
 
   <!-- Ad -->
-  <div class="container">
+  <div class="container ad-wrap">
     <AdPlaceholder slot="in-article" label="広告" />
   </div>
 
   <!-- ======================================================
-       MBA Sub-categories
+       Category Showcase
   ====================================================== -->
-  <section class="section-mba container">
-    <div class="section-header">
-      <h2 class="section-title">経営学を深める</h2>
-      <a href={url('/category/mba')} class="view-all">全記事 →</a>
-    </div>
-    <div class="mba-groups">
-      {mbaGroups.map(group => (
-        <div class="mba-group">
-          <div class="mba-group-header">
-            <span class="mba-group-icon">{group.icon}</span>
-            <div>
-              <h3 class="mba-group-label">{group.label}</h3>
-              <p class="mba-group-desc">{group.desc}</p>
-            </div>
-          </div>
-          <ul class="mba-group-list">
-            {group.posts.map(post => post && (
-              <li>
-                <a href={url(`/blog/${post.slug}`)} class="mba-post-link">
-                  <span class="mba-post-title">{post.data.title}</span>
-                  <span class="mba-post-arrow">→</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+  <section class="section-block section-categories">
+    <div class="container">
+      <h2 class="section-title section-title--center">カテゴリ</h2>
+      <div class="category-grid">
+        {categories.map(cat => (
+          <a href={url(`/category/${cat.slug}`)} class="category-card" style={`--cat: ${cat.color}`}>
+            <div class="category-icon">{cat.icon}</div>
+            <h3 class="category-name">{cat.label}</h3>
+            <p class="category-desc">{cat.desc}</p>
+            <span class="category-arrow">→</span>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 
   <!-- ======================================================
-       Latest Posts
+       MBA Deep Dive
   ====================================================== -->
-  <section class="section-latest container">
-    <div class="section-header">
-      <h2 class="section-title">最新記事</h2>
-      <a href={url('/blog')} class="view-all">すべて見る →</a>
-    </div>
-    <div class="posts-grid">
-      {latestPosts.map(post => (
-        <PostCard post={post} />
-      ))}
+  <section class="section-block section-mba">
+    <div class="container">
+      <div class="section-header">
+        <h2 class="section-title">経営学を深める</h2>
+        <a href={url('/category/mba')} class="view-all">全記事 →</a>
+      </div>
+      <div class="mba-groups">
+        {mbaGroupsWithPosts.map(group => (
+          <div class="mba-group">
+            <a href={url(`/mba/${group.slug}`)} class="mba-group-header">
+              <span class="mba-group-icon">{group.icon}</span>
+              <div class="mba-group-meta">
+                <h3 class="mba-group-label">{group.label}</h3>
+                <p class="mba-group-desc">{group.desc}</p>
+              </div>
+              <span class="mba-group-arrow">→</span>
+            </a>
+            <ul class="mba-group-list">
+              {group.posts.map(post => post && (
+                <li>
+                  <a href={url(`/blog/${post.slug}`)} class="mba-post-link">
+                    <span class="mba-post-title">{post.data.title}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
   <!-- ======================================================
        Interactive Novels CTA
   ====================================================== -->
-  <section class="section-novels container">
-    <div class="novels-cta">
-      <div class="novels-cta-text">
-        <div class="novels-cta-tag">新体験</div>
-        <h2 class="novels-cta-title">動く小説を<br />読んでみませんか？</h2>
-        <p class="novels-cta-desc">
-          スクロールに連動したアニメーションで語られる物語。<br />
-          読むのではなく、「体験する」小説の世界へ。
-        </p>
-        <a href={url('/novels')} class="btn btn-primary">小説を読む</a>
-      </div>
-      <div class="novels-cta-visual" aria-hidden="true">
-        <div class="novel-preview">
-          <div class="novel-line"></div>
-          <div class="novel-line novel-line--short"></div>
-          <div class="novel-line"></div>
-          <div class="novel-line novel-line--medium"></div>
-          <div class="novel-line novel-line--short"></div>
+  <section class="section-block section-novels">
+    <div class="container">
+      <div class="novels-cta">
+        <div class="novels-cta-text">
+          <div class="novels-cta-tag">新体験</div>
+          <h2 class="novels-cta-title">動く小説を<br />読んでみませんか？</h2>
+          <p class="novels-cta-desc">
+            スクロールに連動したアニメーションで語られる物語。<br />
+            読むのではなく、「体験する」小説の世界へ。
+          </p>
+          <a href={url('/novels')} class="btn btn-primary">小説を読む</a>
+        </div>
+        <div class="novels-cta-visual" aria-hidden="true">
+          <div class="novel-preview">
+            <div class="novel-line"></div>
+            <div class="novel-line novel-line--short"></div>
+            <div class="novel-line"></div>
+            <div class="novel-line novel-line--medium"></div>
+            <div class="novel-line novel-line--short"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -215,7 +189,7 @@ const mbaGroups = [
 
 <style>
 /* ============================================================
-   Hero — Light Theme
+   Hero
    ============================================================ */
 .hero {
   background: linear-gradient(135deg, #fdfcf8 0%, #f5f3ec 50%, #fdfcf8 100%);
@@ -223,7 +197,6 @@ const mbaGroups = [
   overflow: hidden;
   position: relative;
 }
-
 .hero::before {
   content: '';
   position: absolute;
@@ -235,15 +208,13 @@ const mbaGroups = [
   background: radial-gradient(circle, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 70%);
   pointer-events: none;
 }
-
 .hero-inner {
   position: relative;
   z-index: 1;
   padding-top: var(--space-3xl);
-  padding-bottom: var(--space-3xl);
+  padding-bottom: var(--space-2xl);
   max-width: 680px;
 }
-
 .hero-tag {
   display: inline-block;
   font-size: 0.7rem;
@@ -257,7 +228,6 @@ const mbaGroups = [
   margin-bottom: var(--space-xl);
   background: var(--color-accent-bg);
 }
-
 .hero-title {
   font-size: clamp(2rem, 5vw, 3.25rem);
   font-weight: 700;
@@ -266,7 +236,6 @@ const mbaGroups = [
   color: var(--color-text);
   margin-bottom: var(--space-xl);
 }
-
 .hero-lead {
   font-size: clamp(0.95rem, 2vw, 1.05rem);
   color: var(--color-text-muted);
@@ -274,45 +243,7 @@ const mbaGroups = [
   margin-bottom: var(--space-2xl);
 }
 .hero-lead strong { color: var(--color-accent); font-weight: 700; }
-
-.hero-actions {
-  display: flex;
-  gap: var(--space-md);
-  flex-wrap: wrap;
-  margin-bottom: var(--space-xl);
-}
-
-/* Stats */
-.hero-stats {
-  display: flex;
-  align-items: center;
-  gap: var(--space-lg);
-  padding-top: var(--space-xl);
-  border-top: 1px solid var(--color-border);
-  margin-top: var(--space-xl);
-}
-.stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.stat-num {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--color-accent);
-  line-height: 1;
-}
-.stat-label {
-  font-size: 0.7rem;
-  color: var(--color-text-faint);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-.stat-sep {
-  width: 1px;
-  height: 32px;
-  background: var(--color-border);
-}
+.hero-actions { display: flex; gap: var(--space-md); flex-wrap: wrap; }
 
 /* Scroll hint */
 .scroll-hint {
@@ -320,56 +251,41 @@ const mbaGroups = [
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  padding: var(--space-lg) 0 var(--space-2xl);
+  padding: var(--space-xl) 0 var(--space-2xl);
   color: var(--color-accent);
   animation: scrollHintFade 2.8s ease-in-out infinite;
 }
-.scroll-hint-text {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-}
+.scroll-hint-text { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.35em; }
 .scroll-hint-line {
-  width: 2px;
-  height: 52px;
+  width: 2px; height: 52px;
   background: color-mix(in srgb, var(--color-accent) 20%, transparent);
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
+  border-radius: 2px; position: relative; overflow: hidden;
 }
 .scroll-hint-dot {
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
+  position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+  width: 6px; height: 6px; border-radius: 50%;
   background: var(--color-accent);
   animation: scrollDotDrop 2.8s ease-in-out infinite;
 }
-@keyframes scrollHintFade {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 1; }
-}
-@keyframes scrollDotDrop {
-  0% { top: -8px; opacity: 0; }
-  20% { opacity: 1; }
-  80% { opacity: 0.6; }
-  100% { top: 52px; opacity: 0; }
-}
+@keyframes scrollHintFade { 0%,100%{opacity:.4} 50%{opacity:1} }
+@keyframes scrollDotDrop { 0%{top:-8px;opacity:0} 20%{opacity:1} 80%{opacity:.6} 100%{top:52px;opacity:0} }
 
 /* ============================================================
-   Sections Common
+   Section blocks — unified beige background alternating
    ============================================================ */
-.section-categories,
-.section-featured,
-.section-latest,
-.section-novels {
-  padding: var(--space-3xl) var(--space-lg);
-}
+.section-block { padding: var(--space-3xl) 0; }
 
+.section-latest  { background: #fdfcf8; border-bottom: 1px solid var(--color-border); }
+.section-popular { background: #f5f3ec; border-bottom: 1px solid var(--color-border); }
+.section-categories { background: #fdfcf8; border-bottom: 1px solid var(--color-border); }
+.section-mba    { background: #f5f3ec; border-bottom: 1px solid var(--color-border); }
+.section-novels { background: #fdfcf8; }
+
+.ad-wrap { padding: var(--space-lg) var(--space-lg) 0; }
+
+/* ============================================================
+   Section headings
+   ============================================================ */
 .section-title {
   font-size: 1.375rem;
   font-weight: 700;
@@ -380,14 +296,17 @@ const mbaGroups = [
 .section-title::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 1.1em;
+  left: 0; top: 50%; transform: translateY(-50%);
+  width: 3px; height: 1.1em;
   background: var(--color-accent);
   border-radius: 2px;
 }
+.section-title--center {
+  padding-left: 0;
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+.section-title--center::before { display: none; }
 
 .section-header {
   display: flex;
@@ -395,15 +314,14 @@ const mbaGroups = [
   justify-content: space-between;
   margin-bottom: var(--space-xl);
 }
-.section-header .section-title { margin-bottom: 0; }
-.section-categories .section-title { margin-bottom: var(--space-xl); }
+.view-all { font-size: 0.875rem; font-weight: 600; color: var(--color-accent); text-decoration: none; }
+.view-all:hover { opacity: 0.8; }
 
-.view-all {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-accent);
-}
-.view-all:hover { color: var(--color-accent-light); }
+/* ============================================================
+   Grids
+   ============================================================ */
+.posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); }
+.featured-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--space-lg); }
 
 /* ============================================================
    Category Grid
@@ -413,60 +331,89 @@ const mbaGroups = [
   grid-template-columns: repeat(4, 1fr);
   gap: var(--space-lg);
 }
-
 .category-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-sm);
+  display: flex; flex-direction: column; gap: var(--space-sm);
   background: var(--color-bg);
   border: 1.5px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-xl);
-  text-decoration: none;
-  color: inherit;
+  text-decoration: none; color: inherit;
   transition: border-color var(--transition-md), transform var(--transition-md), box-shadow var(--transition-md);
   box-shadow: var(--shadow-sm);
-  position: relative;
-  overflow: hidden;
+  position: relative; overflow: hidden;
 }
 .category-card::after {
   content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
+  position: absolute; top: 0; left: 0; width: 100%; height: 3px;
   background: var(--cat, var(--color-accent));
-  transform: scaleX(0);
-  transform-origin: left;
+  transform: scaleX(0); transform-origin: left;
   transition: transform var(--transition-md);
 }
-.category-card:hover {
-  border-color: var(--color-border-light);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
+.category-card:hover { border-color: var(--color-border-light); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
 .category-card:hover::after { transform: scaleX(1); }
-
 .category-icon { font-size: 2rem; }
 .category-name { font-size: 1rem; font-weight: 700; color: var(--color-text); }
 .category-desc { font-size: 0.8rem; color: var(--color-text-muted); line-height: 1.6; flex: 1; }
 .category-arrow { font-size: 1.1rem; font-weight: 700; color: var(--cat, var(--color-accent)); margin-top: auto; }
 
 /* ============================================================
-   Grids
+   MBA Sub-categories
    ============================================================ */
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: var(--space-lg);
-}
-
-.posts-grid {
+.mba-groups {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-lg);
 }
+.mba-group {
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow var(--transition-md), border-color var(--transition-md);
+}
+.mba-group:hover { border-color: var(--cat-mba); box-shadow: var(--shadow-lg); }
+
+.mba-group-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-lg) var(--space-xl);
+  background: color-mix(in srgb, var(--cat-mba) 6%, white);
+  border-bottom: 1px solid var(--color-border);
+  text-decoration: none;
+  color: inherit;
+  transition: background var(--transition-fast);
+}
+.mba-group-header:hover { background: color-mix(in srgb, var(--cat-mba) 12%, white); }
+.mba-group-icon { font-size: 1.5rem; flex-shrink: 0; }
+.mba-group-meta { flex: 1; }
+.mba-group-label { font-size: 1rem; font-weight: 700; color: var(--color-text); }
+.mba-group-desc { font-size: 0.72rem; color: var(--color-text-faint); line-height: 1.4; margin-top: 2px; }
+.mba-group-arrow { font-size: 1rem; font-weight: 700; color: var(--cat-mba); flex-shrink: 0; }
+
+.mba-group-list {
+  list-style: none; margin: 0; padding: var(--space-md) var(--space-xl);
+  display: flex; flex-direction: column; gap: 2px;
+  flex: 1;
+}
+.mba-post-link {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  padding: 6px 0;
+  border-bottom: 1px dashed var(--color-border);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.mba-post-link:hover { color: var(--cat-mba); }
+li:last-child .mba-post-link { border-bottom: none; }
 
 /* ============================================================
    Novels CTA
@@ -476,117 +423,38 @@ const mbaGroups = [
   grid-template-columns: 1fr 1fr;
   gap: var(--space-2xl);
   align-items: center;
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--cat-novel) 8%, white),
-    color-mix(in srgb, var(--cat-novel) 3%, white)
-  );
+  background: color-mix(in srgb, var(--cat-novel) 6%, white);
   border: 1.5px solid color-mix(in srgb, var(--cat-novel) 25%, var(--color-border));
   border-radius: var(--radius-lg);
   padding: var(--space-2xl);
   box-shadow: var(--shadow-sm);
 }
-
 .novels-cta-tag {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--cat-novel);
-  border: 1.5px solid var(--cat-novel);
-  display: inline-block;
-  padding: 3px 12px;
-  border-radius: 100px;
-  margin-bottom: var(--space-lg);
-  background: white;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--cat-novel); border: 1.5px solid var(--cat-novel);
+  display: inline-block; padding: 3px 12px; border-radius: 100px;
+  margin-bottom: var(--space-lg); background: white;
 }
-
 .novels-cta-title {
   font-family: var(--font-serif);
   font-size: clamp(1.5rem, 3vw, 2rem);
-  line-height: 1.4;
-  margin-bottom: var(--space-lg);
-  color: var(--color-text);
+  line-height: 1.4; margin-bottom: var(--space-lg); color: var(--color-text);
 }
-
-.novels-cta-desc {
-  color: var(--color-text-muted);
-  line-height: 1.8;
-  margin-bottom: var(--space-xl);
-}
-
+.novels-cta-desc { color: var(--color-text-muted); line-height: 1.8; margin-bottom: var(--space-xl); }
 .novels-cta-visual { display: flex; justify-content: center; align-items: center; }
-
-.novel-preview {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 280px;
-}
-.novel-line {
-  height: 2px;
-  background: var(--cat-novel);
-  border-radius: 1px;
-  opacity: 0.4;
-  animation: novelPulse 2.5s ease-in-out infinite;
-}
+.novel-preview { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 280px; }
+.novel-line { height: 2px; background: var(--cat-novel); border-radius: 1px; opacity: 0.4; animation: novelPulse 2.5s ease-in-out infinite; }
 .novel-line--short { width: 45%; }
 .novel-line--medium { width: 70%; }
 .novel-line:nth-child(2) { animation-delay: 0.4s; }
 .novel-line:nth-child(3) { animation-delay: 0.8s; }
 .novel-line:nth-child(4) { animation-delay: 1.2s; }
 .novel-line:nth-child(5) { animation-delay: 1.6s; }
-
-@keyframes novelPulse {
-  0%, 100% { opacity: 0.15; }
-  50% { opacity: 0.6; }
-}
+@keyframes novelPulse { 0%,100%{opacity:.15} 50%{opacity:.6} }
 
 /* ============================================================
-   MBA Sub-categories
+   Responsive
    ============================================================ */
-.section-mba { padding: var(--space-3xl) var(--space-lg); background: var(--color-surface); border-radius: var(--radius-lg); margin: 0 var(--space-lg) var(--space-3xl); }
-.mba-groups {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-lg);
-  margin-top: var(--space-xl);
-}
-.mba-group {
-  background: var(--color-bg);
-  border: 1.5px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-xl);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-  transition: box-shadow var(--transition-md), border-color var(--transition-md);
-}
-.mba-group:hover { border-color: var(--cat-mba); box-shadow: var(--shadow-lg); }
-.mba-group-header { display: flex; align-items: flex-start; gap: var(--space-md); }
-.mba-group-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
-.mba-group-label { font-size: 0.975rem; font-weight: 700; color: var(--color-text); margin-bottom: 2px; }
-.mba-group-desc { font-size: 0.75rem; color: var(--color-text-faint); line-height: 1.5; }
-.mba-group-list { list-style: none; display: flex; flex-direction: column; gap: var(--space-sm); margin: 0; padding: 0; border-top: 1px solid var(--color-border); padding-top: var(--space-md); }
-.mba-post-link {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: var(--space-sm);
-  text-decoration: none;
-  font-size: 0.82rem;
-  color: var(--color-text-muted);
-  line-height: 1.5;
-  padding: 4px 0;
-  border-bottom: 1px dashed transparent;
-  transition: color var(--transition-fast), border-color var(--transition-fast);
-}
-.mba-post-link:hover { color: var(--cat-mba); border-bottom-color: var(--cat-mba); }
-.mba-post-title { flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.mba-post-arrow { flex-shrink: 0; font-size: 0.75rem; color: var(--cat-mba); opacity: 0; transition: opacity var(--transition-fast); }
-.mba-post-link:hover .mba-post-arrow { opacity: 1; }
-
-/* Responsive */
 .br-desktop { display: block; }
 
 @media (max-width: 1024px) {
@@ -599,11 +467,7 @@ const mbaGroups = [
   .novels-cta { grid-template-columns: 1fr; }
   .novels-cta-visual { display: none; }
   .br-desktop { display: none; }
-  .hero-stats { gap: var(--space-md); }
-}
-@media (max-width: 768px) {
   .mba-groups { grid-template-columns: 1fr; }
-  .section-mba { margin: 0 0 var(--space-3xl); border-radius: 0; }
 }
 @media (max-width: 480px) {
   .category-grid { grid-template-columns: repeat(2, 1fr); }

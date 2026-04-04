@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { mbaGroups } from '../../data/mbaGroups';
+import { url } from '../../utils/url';
+import type { GetStaticPaths } from 'astro';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return mbaGroups.map(group => ({
+    params: { group: group.slug },
+    props: { group },
+  }));
+};
+
+const { group } = Astro.props;
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = group.slugs
+  .map(s => allPosts.find(p => p.slug === s))
+  .filter(Boolean);
+---
+
+<BaseLayout
+  title={`${group.label} — 経営学/MBA | mines-path`}
+  description={`${group.desc}に関する記事一覧。MBAの視点から実務に活かせる経営学を解説します。`}
+>
+  <div class="group-page container">
+
+    <nav class="breadcrumb" aria-label="パンくず">
+      <a href={url('/')}>Home</a>
+      <span>›</span>
+      <a href={url('/category/mba')}>経営学 / MBA</a>
+      <span>›</span>
+      <span>{group.label}</span>
+    </nav>
+
+    <header class="group-header">
+      <div class="group-header-icon">{group.icon}</div>
+      <div class="group-header-text">
+        <div class="group-badge">経営学 / MBA</div>
+        <h1 class="group-title">{group.label}</h1>
+        <p class="group-desc">{group.desc}</p>
+        <p class="group-count">{posts.length} 件の記事</p>
+      </div>
+    </header>
+
+    <div class="posts-grid">
+      {posts.map(post => post && <PostCard post={post} />)}
+    </div>
+
+    <div class="group-nav">
+      <p class="group-nav-label">他のテーマを読む</p>
+      <div class="group-nav-list">
+        {mbaGroups.filter(g => g.slug !== group.slug).map(g => (
+          <a href={url(`/mba/${g.slug}`)} class="group-nav-item">
+            <span>{g.icon}</span>
+            <span>{g.label}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</BaseLayout>
+
+<style>
+.group-page { padding: var(--space-2xl) var(--space-lg) var(--space-3xl); }
+
+.breadcrumb { display: flex; align-items: center; gap: var(--space-xs); font-size: 0.8rem; color: var(--color-text-faint); margin-bottom: var(--space-2xl); flex-wrap: wrap; }
+.breadcrumb a { color: var(--color-text-faint); text-decoration: none; }
+.breadcrumb a:hover { color: var(--color-accent); }
+
+.group-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-xl);
+  background: linear-gradient(135deg, #fdfcf8, #f5f3ec);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--cat-mba);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
+}
+.group-header-icon { font-size: 3rem; flex-shrink: 0; }
+.group-header-text { display: flex; flex-direction: column; gap: var(--space-sm); }
+.group-badge { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--cat-mba); }
+.group-title { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; color: var(--color-text); }
+.group-desc { color: var(--color-text-muted); font-size: 1rem; line-height: 1.7; }
+.group-count { font-size: 0.85rem; color: var(--color-text-faint); }
+
+.posts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); margin-bottom: var(--space-3xl); }
+
+.group-nav { border-top: 1px solid var(--color-border); padding-top: var(--space-2xl); }
+.group-nav-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-faint); margin-bottom: var(--space-lg); }
+.group-nav-list { display: flex; flex-wrap: wrap; gap: var(--space-md); }
+.group-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: 100px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+.group-nav-item:hover { border-color: var(--cat-mba); color: var(--cat-mba); background: color-mix(in srgb, var(--cat-mba) 6%, white); }
+
+@media (max-width: 1024px) { .posts-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 600px) {
+  .group-header { flex-direction: column; }
+  .posts-grid { grid-template-columns: 1fr; }
+}
+</style>
