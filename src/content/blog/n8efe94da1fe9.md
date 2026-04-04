@@ -16,6 +16,9 @@ originalSource: "note"
 originalTitle: "「競争」ではなく「貢献」～誰も不幸にしないイノベーションの考え方～"
 sourceUrl: "https://note.com/p3_vp/n/n8efe94da1fe9"
 noteId: "n8efe94da1fe9"
+related:
+  - "nbfe10b3a7feb"
+  - "na7a348f6a1d8"
 ---
 
 最近、Kindleの読み上げ機能にはまっています。

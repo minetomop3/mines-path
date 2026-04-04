@@ -16,6 +16,9 @@ originalSource: "note"
 originalTitle: "イチゴと高級ミカン、イノベーションの最終解"
 sourceUrl: "https://note.com/p3_vp/n/nff99ceb8215f"
 noteId: "nff99ceb8215f"
+related:
+  - "n0cac995e6f4d"
+  - "n8efe94da1fe9"
 ---
 
 今週末、久しぶりに一人でぶらぶら散歩をしました。

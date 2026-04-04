@@ -16,6 +16,9 @@ originalSource: "note"
 originalTitle: "破壊なき市場創造の時代を読んで。未来のイノベーションの形とは？"
 sourceUrl: "https://note.com/p3_vp/n/nbfe10b3a7feb"
 noteId: "nbfe10b3a7feb"
+related:
+  - "na7a348f6a1d8"
+  - "n665fb8df37c1"
 ---
 
 こんにちは。

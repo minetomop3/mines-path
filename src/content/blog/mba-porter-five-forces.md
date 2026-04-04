@@ -12,6 +12,9 @@ keywords: "ポーター5フォース, 競争戦略, MBA, 経営分析, 競合分
 draft: false
 originalSource: "note"
 originalFile: "sample-mba-01.md"
+related:
+  - "n4681c3bc01ab"
+  - "n097fa10c04ba"
 ---
 
 ## はじめに

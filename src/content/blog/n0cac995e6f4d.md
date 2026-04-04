@@ -15,6 +15,9 @@ originalSource: "note"
 originalTitle: "マックポーク復活に学ぶ「破壊的イノベーション」の戦略"
 sourceUrl: "https://note.com/p3_vp/n/n0cac995e6f4d"
 noteId: "n0cac995e6f4d"
+related:
+  - "nb62042bc150b"
+  - "nff99ceb8215f"
 ---
 
 この週末、家族で久しぶりにマクドナルドに行きました。

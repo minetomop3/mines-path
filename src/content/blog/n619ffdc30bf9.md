@@ -16,6 +16,9 @@ originalSource: "note"
 originalTitle: "クリステンセンの理論と吉本劇場で感じた非合理的な愛着"
 sourceUrl: "https://note.com/p3_vp/n/n619ffdc30bf9"
 noteId: "n619ffdc30bf9"
+related:
+  - "nb62042bc150b"
+  - "n8c7ff029e799"
 ---
 
 皆さん、こんにちは。 いつもブログを読んでいただき、ありがとうございます。 このブログでは、日常の気づきに少しの専門知識を交えながら、「人生を豊かにする知恵」や「経営学の学び」を皆さんとシェアしていきたいと思っています。

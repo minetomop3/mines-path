@@ -16,6 +16,9 @@ originalSource: "note"
 originalTitle: "「書いたつもり」が一番危険。新規事業とプロダクト4Pの大きな罠"
 sourceUrl: "https://note.com/p3_vp/n/n2656ead9cfa6"
 noteId: "n2656ead9cfa6"
+related:
+  - "n097fa10c04ba"
+  - "nae1d006a374e"
 ---
 
 その「プロダクト4P」、本当に機能していますか？

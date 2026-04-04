@@ -27,6 +27,47 @@ const popularPosts = popularSlugs
   .filter(Boolean);
 
 const latestPosts = allPosts.slice(0, 6);
+
+// 経営学サブカテゴリ
+const mbaPosts = allPosts.filter(p => p.data.categorySlug === 'mba');
+const mbaGroups = [
+  {
+    label: '競争戦略',
+    icon: '⚔️',
+    desc: 'ポーター・ミンツバーグ・差別化',
+    slugs: ['mba-porter-five-forces', 'n4681c3bc01ab', 'n45859a821102', 'n48ef026dbd1b', 'n9071ff98b421', 'n097fa10c04ba', 'n6d8a0080a432'],
+  },
+  {
+    label: 'イノベーション',
+    icon: '💡',
+    desc: '破壊的創造・ダイナミック・ケイパビリティ',
+    slugs: ['nb62042bc150b', 'ne3660b6e1485', 'nbfe10b3a7feb', 'na7a348f6a1d8', 'n8efe94da1fe9', 'n0cac995e6f4d', 'nff99ceb8215f'],
+  },
+  {
+    label: 'ブルーオーシャン',
+    icon: '🌊',
+    desc: '競争しない市場・非破壊的創造',
+    slugs: ['n8c7ff029e799', 'n2344189a528b', 'nbd658cd1ebd9', 'n665fb8df37c1', 'n619ffdc30bf9'],
+  },
+  {
+    label: 'マーケティング',
+    icon: '📣',
+    desc: 'コトラー・顧客価値・市場分析',
+    slugs: ['n900490d8c2c6', 'n64fc3a582e24', 'nb106c7d21d95', 'n5f7e470473a1', 'nae1d006a374e', 'nb206a28baf03'],
+  },
+  {
+    label: '組織・人材',
+    icon: '👥',
+    desc: 'モチベーション・知識経営・チーム',
+    slugs: ['n2a2e696fff23', 'ncbea71c42611', 'n462242610215', 'n995116d3fe55', 'nc3f3747b870c'],
+  },
+].map(group => ({
+  ...group,
+  posts: group.slugs
+    .map(s => mbaPosts.find(p => p.slug === s))
+    .filter(Boolean)
+    .slice(0, 3),
+}));
 ---
 
 <BaseLayout title="Home">
@@ -53,8 +94,10 @@ const latestPosts = allPosts.slice(0, 6);
       </div>
     </div>
     <div class="scroll-hint" aria-hidden="true">
-      <span class="scroll-hint-text">scroll</span>
-      <div class="scroll-hint-arrow"></div>
+      <span class="scroll-hint-text">SCROLL</span>
+      <div class="scroll-hint-line">
+        <div class="scroll-hint-dot"></div>
+      </div>
     </div>
   </section>
 
@@ -94,6 +137,39 @@ const latestPosts = allPosts.slice(0, 6);
   <div class="container">
     <AdPlaceholder slot="in-article" label="広告" />
   </div>
+
+  <!-- ======================================================
+       MBA Sub-categories
+  ====================================================== -->
+  <section class="section-mba container">
+    <div class="section-header">
+      <h2 class="section-title">経営学を深める</h2>
+      <a href={url('/category/mba')} class="view-all">全記事 →</a>
+    </div>
+    <div class="mba-groups">
+      {mbaGroups.map(group => (
+        <div class="mba-group">
+          <div class="mba-group-header">
+            <span class="mba-group-icon">{group.icon}</span>
+            <div>
+              <h3 class="mba-group-label">{group.label}</h3>
+              <p class="mba-group-desc">{group.desc}</p>
+            </div>
+          </div>
+          <ul class="mba-group-list">
+            {group.posts.map(post => post && (
+              <li>
+                <a href={url(`/blog/${post.slug}`)} class="mba-post-link">
+                  <span class="mba-post-title">{post.data.title}</span>
+                  <span class="mba-post-arrow">→</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
 
   <!-- ======================================================
        Latest Posts
@@ -243,31 +319,45 @@ const latestPosts = allPosts.slice(0, 6);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  padding-bottom: var(--space-xl);
-  color: var(--color-text-faint);
-  animation: scrollHintFade 2.5s ease-in-out infinite;
+  gap: 10px;
+  padding: var(--space-lg) 0 var(--space-2xl);
+  color: var(--color-accent);
+  animation: scrollHintFade 2.8s ease-in-out infinite;
 }
 .scroll-hint-text {
-  font-size: 0.62rem;
-  letter-spacing: 0.2em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
   text-transform: uppercase;
 }
-.scroll-hint-arrow {
-  width: 1px;
-  height: 36px;
-  background: linear-gradient(to bottom, var(--color-accent), transparent);
-  animation: scrollArrowDrop 2.5s ease-in-out infinite;
+.scroll-hint-line {
+  width: 2px;
+  height: 52px;
+  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+.scroll-hint-dot {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  animation: scrollDotDrop 2.8s ease-in-out infinite;
 }
 @keyframes scrollHintFade {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.9; }
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
 }
-@keyframes scrollArrowDrop {
-  0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
-  40% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-  41% { transform-origin: bottom; }
-  100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+@keyframes scrollDotDrop {
+  0% { top: -8px; opacity: 0; }
+  20% { opacity: 1; }
+  80% { opacity: 0.6; }
+  100% { top: 52px; opacity: 0; }
 }
 
 /* ============================================================
@@ -452,12 +542,57 @@ const latestPosts = allPosts.slice(0, 6);
   50% { opacity: 0.6; }
 }
 
+/* ============================================================
+   MBA Sub-categories
+   ============================================================ */
+.section-mba { padding: var(--space-3xl) var(--space-lg); background: var(--color-surface); border-radius: var(--radius-lg); margin: 0 var(--space-lg) var(--space-3xl); }
+.mba-groups {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+.mba-group {
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  transition: box-shadow var(--transition-md), border-color var(--transition-md);
+}
+.mba-group:hover { border-color: var(--cat-mba); box-shadow: var(--shadow-lg); }
+.mba-group-header { display: flex; align-items: flex-start; gap: var(--space-md); }
+.mba-group-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 2px; }
+.mba-group-label { font-size: 0.975rem; font-weight: 700; color: var(--color-text); margin-bottom: 2px; }
+.mba-group-desc { font-size: 0.75rem; color: var(--color-text-faint); line-height: 1.5; }
+.mba-group-list { list-style: none; display: flex; flex-direction: column; gap: var(--space-sm); margin: 0; padding: 0; border-top: 1px solid var(--color-border); padding-top: var(--space-md); }
+.mba-post-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-sm);
+  text-decoration: none;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+  padding: 4px 0;
+  border-bottom: 1px dashed transparent;
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.mba-post-link:hover { color: var(--cat-mba); border-bottom-color: var(--cat-mba); }
+.mba-post-title { flex: 1; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.mba-post-arrow { flex-shrink: 0; font-size: 0.75rem; color: var(--cat-mba); opacity: 0; transition: opacity var(--transition-fast); }
+.mba-post-link:hover .mba-post-arrow { opacity: 1; }
+
 /* Responsive */
 .br-desktop { display: block; }
 
 @media (max-width: 1024px) {
   .category-grid { grid-template-columns: repeat(2, 1fr); }
   .posts-grid { grid-template-columns: repeat(2, 1fr); }
+  .mba-groups { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 768px) {
   .featured-grid { grid-template-columns: 1fr; }
@@ -465,6 +600,10 @@ const latestPosts = allPosts.slice(0, 6);
   .novels-cta-visual { display: none; }
   .br-desktop { display: none; }
   .hero-stats { gap: var(--space-md); }
+}
+@media (max-width: 768px) {
+  .mba-groups { grid-template-columns: 1fr; }
+  .section-mba { margin: 0 0 var(--space-3xl); border-radius: 0; }
 }
 @media (max-width: 480px) {
   .category-grid { grid-template-columns: repeat(2, 1fr); }

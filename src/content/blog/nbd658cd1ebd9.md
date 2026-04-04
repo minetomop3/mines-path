@@ -16,6 +16,9 @@ originalSource: "note"
 originalTitle: "ブルー・オーシャン戦略の先にある「破壊なき創造」への道"
 sourceUrl: "https://note.com/p3_vp/n/nbd658cd1ebd9"
 noteId: "nbd658cd1ebd9"
+related:
+  - "n8c7ff029e799"
+  - "nbfe10b3a7feb"
 ---
 
 ３連休の中日、皆さんはいかがお過ごしでしょうか。

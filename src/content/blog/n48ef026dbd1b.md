@@ -16,6 +16,9 @@ originalSource: "note"
 originalTitle: "日本企業が得意としてきたGEMBAの戦略。ミンツバーグ『戦略サファリ』に学ぶ～後半"
 sourceUrl: "https://note.com/p3_vp/n/n48ef026dbd1b"
 noteId: "n48ef026dbd1b"
+related:
+  - "n45859a821102"
+  - "n9071ff98b421"
 ---
 
 ここ数十年、日本のものづくり企業は「レッドオーシャン」から
