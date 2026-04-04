@@ -1,10 +1,9 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://minetomop3.github.io',
-  base: '/mines-path',
+  site: 'https://mines-path.jp',
   output: 'static',
   build: {
-    assets: '_assets',
+    assets: 'assets',
   },
 });
