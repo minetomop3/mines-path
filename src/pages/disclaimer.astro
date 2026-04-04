@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="免責事項" description="mines-path の免責事項です。">
+  <div class="legal-page content-container">
+    <h1>免責事項</h1>
+    <p class="updated">最終更新日：2026年4月4日</p>
+
+    <section>
+      <h2>1. 情報の正確性について</h2>
+      <p>当サイト「mines-path」に掲載している情報は、できる限り正確を期しておりますが、内容の完全性・正確性・有用性について保証するものではありません。掲載情報に基づいて行動した結果生じたいかなる損害についても、当サイト運営者は責任を負いません。</p>
+    </section>
+
+    <section>
+      <h2>2. 外部リンクについて</h2>
+      <p>当サイトには外部サイトへのリンクが含まれる場合があります。リンク先サイトの内容については、当サイトは責任を負いません。リンク先サイトの利用は、各サイトの利用規約に従ってください。</p>
+    </section>
+
+    <section>
+      <h2>3. 著作権について</h2>
+      <p>当サイトに掲載されているすべてのコンテンツ（文章・画像・デザイン等）の著作権は、特記なき限り当サイト運営者に帰属します。無断転載・複製を禁じます。引用の際は出典を明記してください。</p>
+    </section>
+
+    <section>
+      <h2>4. 投資・ビジネス判断について</h2>
+      <p>当サイトに掲載する経営学・ビジネス関連の情報は、一般的な教育・情報提供を目的としており、特定の投資行動やビジネス判断を推奨するものではありません。実際のビジネス判断は、専門家への相談のうえご自身の責任で行ってください。</p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+.legal-page { padding: var(--space-3xl) var(--space-lg); max-width: 800px; }
+.legal-page h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: var(--space-sm); }
+.updated { font-size: 0.85rem; color: var(--color-text-faint); margin-bottom: var(--space-3xl); }
+.legal-page section { margin-bottom: var(--space-2xl); }
+.legal-page h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: var(--space-md); padding-left: var(--space-md); border-left: 3px solid var(--color-accent); }
+.legal-page p { color: var(--color-text-muted); line-height: 1.9; font-size: 0.95rem; }
+</style>

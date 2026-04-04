@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="プライバシーポリシー" description="mines-path のプライバシーポリシーです。">
+  <div class="legal-page content-container">
+    <h1>プライバシーポリシー</h1>
+    <p class="updated">最終更新日：2026年4月4日</p>
+
+    <section>
+      <h2>1. 個人情報の収集について</h2>
+      <p>当サイト「mines-path」（以下、当サイト）では、お問い合わせフォームの利用時に、お名前・メールアドレスなどの個人情報をご提供いただく場合があります。取得した情報は、お問い合わせへの回答以外の目的には使用しません。</p>
+    </section>
+
+    <section>
+      <h2>2. アクセス解析ツールについて</h2>
+      <p>当サイトでは、Googleによるアクセス解析ツール「Googleアナリティクス」を使用することがあります。GoogleアナリティクスはCookieを使用してデータを収集しますが、個人を特定する情報は含まれません。Cookieの無効化はブラウザの設定から行えます。</p>
+    </section>
+
+    <section>
+      <h2>3. 広告について</h2>
+      <p>当サイトはGoogle AdSenseを利用した広告を掲載する場合があります。Googleは、ユーザーの興味に応じた広告を表示するためにCookieを使用することがあります。詳細はGoogleの<a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">広告に関するポリシー</a>をご参照ください。</p>
+    </section>
+
+    <section>
+      <h2>4. 免責事項</h2>
+      <p>当サイトのコンテンツは情報提供を目的としており、内容の正確性・完全性を保証するものではありません。当サイトの情報を利用することで生じた損害について、運営者は一切の責任を負いません。</p>
+    </section>
+
+    <section>
+      <h2>5. プライバシーポリシーの変更</h2>
+      <p>本ポリシーは、法令の変更や運営方針の見直しに応じて、予告なく変更される場合があります。</p>
+    </section>
+
+    <section>
+      <h2>6. お問い合わせ</h2>
+      <p>プライバシーポリシーに関するご質問は、<a href="/contact">お問い合わせページ</a>よりご連絡ください。</p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+.legal-page { padding: var(--space-3xl) var(--space-lg); max-width: 800px; }
+.legal-page h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: var(--space-sm); }
+.updated { font-size: 0.85rem; color: var(--color-text-faint); margin-bottom: var(--space-3xl); }
+.legal-page section { margin-bottom: var(--space-2xl); }
+.legal-page h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: var(--space-md); padding-left: var(--space-md); border-left: 3px solid var(--color-accent); }
+.legal-page p { color: var(--color-text-muted); line-height: 1.9; font-size: 0.95rem; }
+.legal-page a { color: var(--color-accent); }
+</style>

@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="お問い合わせ" description="mines-path へのお問い合わせはこちらから。">
+  <div class="contact-page content-container">
+    <h1>お問い合わせ</h1>
+    <p class="contact-lead">ご質問・ご意見・ご要望はこちらのフォームからお送りください。<br />通常3〜5営業日以内にご返信します。</p>
+
+    <form class="contact-form" name="contact" method="POST" data-netlify="true" action="/contact/thanks">
+      <div class="form-group">
+        <label for="name">お名前 <span class="required">*</span></label>
+        <input type="text" id="name" name="name" required placeholder="山田 太郎" />
+      </div>
+      <div class="form-group">
+        <label for="email">メールアドレス <span class="required">*</span></label>
+        <input type="email" id="email" name="email" required placeholder="example@email.com" />
+      </div>
+      <div class="form-group">
+        <label for="subject">件名</label>
+        <input type="text" id="subject" name="subject" placeholder="お問い合わせ内容の件名" />
+      </div>
+      <div class="form-group">
+        <label for="message">メッセージ <span class="required">*</span></label>
+        <textarea id="message" name="message" required rows="6" placeholder="お問い合わせ内容をご記入ください"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">送信する</button>
+    </form>
+
+    <div class="contact-note">
+      <p>※ お問い合わせの内容によっては、返信できない場合もございます。あらかじめご了承ください。</p>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+.contact-page { padding: var(--space-3xl) var(--space-lg); max-width: 640px; }
+.contact-page h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: var(--space-md); }
+.contact-lead { color: var(--color-text-muted); line-height: 1.9; margin-bottom: var(--space-3xl); }
+.contact-form { display: flex; flex-direction: column; gap: var(--space-xl); }
+.form-group { display: flex; flex-direction: column; gap: var(--space-sm); }
+.form-group label { font-size: 0.9rem; font-weight: 600; color: var(--color-text); }
+.required { color: var(--color-accent); }
+.form-group input,
+.form-group textarea {
+  padding: var(--space-md);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+  background: var(--color-bg);
+  transition: border-color var(--transition-fast);
+  width: 100%;
+  box-sizing: border-box;
+}
+.form-group input:focus,
+.form-group textarea:focus { outline: none; border-color: var(--color-accent); }
+.form-group textarea { resize: vertical; }
+.contact-note { margin-top: var(--space-2xl); padding: var(--space-lg); background: var(--color-surface); border-radius: var(--radius-md); }
+.contact-note p { font-size: 0.82rem; color: var(--color-text-faint); margin: 0; }
+</style>

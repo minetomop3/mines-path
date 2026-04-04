@@ -10,7 +10,8 @@
     "process-notes": "node scripts/process-notes.js"
   },
   "dependencies": {
-    "astro": "^4.16.0",
-    "@anthropic-ai/sdk": "^0.30.0"
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@astrojs/sitemap": "^3.2.1",
+    "astro": "^4.16.0"
   }
 }
