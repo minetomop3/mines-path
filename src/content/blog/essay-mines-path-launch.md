@@ -1,5 +1,5 @@
 ---
-title: "「mines-path.jp」を立ち上げました ── 豊かさを創る、自分の道"
+title: "「mines-path.jp」を立ち上げました ── 豊かさを創る、自分と道"
 description: "Noteで1年間・週1記事を継続してきた。独自サイトmines-path.jpを立ち上げた経緯と、AIエージェントを使ったサイト制作の体験、「豊かさを創る、自分の道」というテーマについて。"
 pubDate: 2026-04-05
 heroImage: "/blog-images/essay-mines-path-launch.png"
