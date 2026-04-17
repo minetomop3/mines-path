@@ -10,6 +10,7 @@ tags:
   - "PKM"
   - "ノート術"
 keywords: "Obsidian, PKM, ノート術, 第二の脳, Zettelkasten, Synology NAS, 知識管理"
+heroImage: "/blog-images/nba775177db94_a160681ae630d5c91b048655179be01c.png"
 draft: false
 isNovel: false
 originalSource: "original"
@@ -28,6 +29,8 @@ related:
 
 ## 面倒なメモ作成
 
+![面倒なメモ作成](/blog-images/nba775177db94_1758456489-382miE5cXjHWOnSkUfroDAph.png)
+
 私はSynology Noteというメモソフトを活用しておりました。デバイス間の同期は便利だったのですが、どうにも動作が大変重たい…。アプリを開くのが億劫になり、いつしかメモを取ること自体がストレスになっていました。タグ付けは便利でしたが。。
 
 そんな中、最近Obsidianを使い始めてみました。
@@ -35,6 +38,8 @@ related:
 Synologyのメモ帖と比べて、軽快で、思考を邪魔しない、サクサクと動くのが気持ちいです。しかし、Obsidianの本当の魅力は、その先にありました。それは、知識が「繋がる」面白さです。
 
 メモ同士を簡単な操作でリンク付けすると、バラバラだった知識がネットワークのように視覚化されていきます。例えばセミナーや大学講義で取ったメモを整理していくと、キーワードが線で結ばれていく様子が見て取れて、思考が整理されていく感覚がありました。
+
+![Obsidianのメモのつながりの視覚化機能](/blog-images/nba775177db94_1758454181-Pv3gfY1FDdMxSTHNipCW2utj.png)
 
 ---
 
@@ -61,7 +66,11 @@ Obsidianのデータは、PC上にシンプルなMarkdown（MD）形式のテキ
 
 Synology Driveの設定画面を開きます。そして、フォルダを作成します。
 
+![Synology Driveの設定画面](/blog-images/nba775177db94_1758459752-b92LMNtDVFjxHvJK8PXg1Q7f.png)
+
 次に、Obsidianでは上記で設定したフォルダをVaultフォルダとして選択します。
+
+![SynologyDrive上のフォルダを作成してNASと同期](/blog-images/nba775177db94_1758459858-9CJjomp6vk3Y4x8XztfGWZrB.png)
 
 PC上のObsidian用フォルダをSynology Driveの同期フォルダに指定するだけで、設定は完了。最新ファイルはNAS上に保管されていきます。
 これで、滑って転んでPCが壊れても大丈夫です。
