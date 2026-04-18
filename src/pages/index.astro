@@ -211,8 +211,8 @@ const mbaGroupsWithPosts = mbaGroups.map(group => ({
 .hero-inner {
   position: relative;
   z-index: 1;
-  padding-top: var(--space-3xl);
-  padding-bottom: var(--space-2xl);
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-md);
   max-width: 680px;
 }
 .hero-tag {
@@ -225,22 +225,22 @@ const mbaGroupsWithPosts = mbaGroups.map(group => ({
   border: 1.5px solid var(--color-accent-dim);
   padding: 4px 14px;
   border-radius: 100px;
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-md);
   background: var(--color-accent-bg);
 }
 .hero-title {
-  font-size: clamp(2rem, 5vw, 3.25rem);
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.02em;
   color: var(--color-text);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-md);
 }
 .hero-lead {
-  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  font-size: clamp(0.9rem, 2vw, 1rem);
   color: var(--color-text-muted);
-  line-height: 1.9;
-  margin-bottom: var(--space-2xl);
+  line-height: 1.8;
+  margin-bottom: var(--space-lg);
 }
 .hero-lead strong { color: var(--color-accent); font-weight: 700; }
 .hero-actions { display: flex; gap: var(--space-md); flex-wrap: wrap; }
@@ -250,8 +250,8 @@ const mbaGroupsWithPosts = mbaGroups.map(group => ({
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: var(--space-xl) 0 var(--space-2xl);
+  gap: 8px;
+  padding: var(--space-md) 0 var(--space-lg);
   color: var(--color-accent);
   animation: scrollHintFade 2.8s ease-in-out infinite;
 }
