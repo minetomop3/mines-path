@@ -1,36 +1,51 @@
 ---
 interface Props {
   slot?: 'header' | 'sidebar' | 'in-article' | 'footer';
+  adSlot?: string;
   label?: string;
 }
 
-const { slot = 'in-article', label } = Astro.props;
+const { slot = 'in-article', adSlot, label } = Astro.props;
 
-const sizes: Record<string, string> = {
-  header:     '728×90',
-  sidebar:    '300×250',
-  'in-article': '468×60',
-  footer:     '728×90',
+const PUB_ID = 'ca-pub-4015964879475374';
+
+const formatBySlot: Record<string, string> = {
+  header:     'auto',
+  sidebar:    'auto',
+  'in-article': 'fluid',
+  footer:     'auto',
 };
 
-const displayLabel = label ?? `広告 (${sizes[slot] ?? 'responsive'})`;
+const adFormat = formatBySlot[slot] ?? 'auto';
+const layout = slot === 'in-article' ? 'in-article' : undefined;
 ---
 
-<div class={`ad-placeholder ad-${slot}`} aria-label="広告エリア">
-  <span class="ad-label">{displayLabel}</span>
-  <!-- Google AdSense の例:
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
-       data-ad-slot="XXXXXXXXXX"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-  -->
+<div class={`ad-container ad-${slot}`} aria-label="広告エリア">
+  <ins
+    class="adsbygoogle"
+    style="display:block"
+    data-ad-client={PUB_ID}
+    data-ad-slot={adSlot ?? '0000000000'}
+    data-ad-format={adFormat}
+    data-ad-layout={layout}
+    data-full-width-responsive="true"
+  ></ins>
+  <span class="ad-fallback">{label ?? 'スポンサー広告'}</span>
 </div>
 
+<script is:inline>
+  (function () {
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      // AdSense not loaded yet; ignore
+    }
+  })();
+</script>
+
 <style>
-.ad-placeholder {
+.ad-container {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,6 +58,20 @@ const displayLabel = label ?? `広告 (${sizes[slot] ?? 'responsive'})`;
   text-transform: uppercase;
   font-weight: 500;
   margin: var(--space-xl) 0;
+  overflow: hidden;
+}
+
+.ad-fallback {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.adsbygoogle {
+  position: relative;
+  z-index: 1;
+  width: 100%;
 }
 
 .ad-header, .ad-footer {
@@ -51,10 +80,10 @@ const displayLabel = label ?? `広告 (${sizes[slot] ?? 'responsive'})`;
 }
 .ad-sidebar {
   width: 300px;
-  height: 250px;
+  min-height: 250px;
 }
 .ad-in-article {
   width: 100%;
-  min-height: 60px;
+  min-height: 90px;
 }
 </style>
