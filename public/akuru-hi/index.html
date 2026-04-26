@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="あくる日 — イタリアでピザ職人を志す青年の掌編小説 by mines-path">
+  <title>あくる日 | mines-path</title>
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --warm-gold: #d4a017;
+      --dawn-orange: #e8743a;
+      --text-warm: #f5e8d0;
+      --text-muted: #c4a882;
+      --glass-bg: rgba(18, 8, 0, 0.68);
+      --glass-border: rgba(212, 160, 23, 0.45);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: #06091f;
+      font-family: 'DotGothic16', monospace;
+      color: var(--text-warm);
+      cursor: default;
+      -webkit-font-smoothing: none;
+    }
+
+    #game { position: relative; width: 100%; height: 100%; overflow: hidden; }
+
+    #bg-canvas {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; z-index: 0;
+    }
+
+    #vignette {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; z-index: 1;
+      background: radial-gradient(ellipse at center, transparent 38%, rgba(0,0,0,0.55) 100%);
+      pointer-events: none;
+    }
+
+    /* ---- Title ---- */
+    #title-screen {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; z-index: 100;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.52);
+      opacity: 0; pointer-events: none;
+      transition: opacity 1s ease;
+      cursor: pointer;
+    }
+    #title-screen.visible { opacity: 1; pointer-events: auto; }
+
+    .title-main {
+      font-size: clamp(2.2rem, 9vw, 4.5rem);
+      color: var(--warm-gold);
+      text-shadow: 0 0 18px rgba(212,160,23,0.9), 0 0 50px rgba(212,160,23,0.3);
+      letter-spacing: 0.35em;
+      animation: warmGlow 3s ease-in-out infinite alternate;
+    }
+    .title-sub {
+      font-size: clamp(0.65rem, 1.8vw, 0.95rem);
+      color: var(--text-muted);
+      margin-top: 0.7em;
+      letter-spacing: 0.5em;
+    }
+    .title-credit {
+      font-size: clamp(0.55rem, 1.4vw, 0.75rem);
+      color: rgba(196,168,130,0.6);
+      margin-top: 0.3em;
+      letter-spacing: 0.2em;
+    }
+    .title-start {
+      font-size: clamp(0.6rem, 1.5vw, 0.85rem);
+      color: var(--text-muted);
+      margin-top: 3.5em;
+      animation: blink 1.8s ease-in-out infinite;
+    }
+
+    @keyframes warmGlow { 0%{filter:brightness(0.85)} 100%{filter:brightness(1.2)} }
+    @keyframes blink { 0%,100%{opacity:0.25} 50%{opacity:1} }
+
+    /* ---- Progress bar ---- */
+    #progress-bar {
+      position: absolute; top: 0; left: 0; height: 2px;
+      background: linear-gradient(90deg, var(--warm-gold), var(--dawn-orange));
+      opacity: 0.7; transition: width 0.6s ease; z-index: 20;
+    }
+
+    /* ---- Page counter ---- */
+    #page-counter {
+      position: absolute; top: 0.9em; right: 1.2em;
+      z-index: 15; font-size: 0.62rem;
+      color: rgba(196,168,130,0.45);
+      letter-spacing: 0.05em;
+    }
+
+    /* ---- Text window ---- */
+    #text-window {
+      position: absolute; bottom: 0; left: 0;
+      width: 100%; z-index: 10;
+      padding: 1.4em 2em 1.8em;
+      background: var(--glass-bg);
+      border-top: 1px solid var(--glass-border);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      cursor: pointer;
+      min-height: 120px;
+    }
+    #text-window.visible { opacity: 1; transform: translateY(0); }
+
+    #text-window::before {
+      content: '';
+      position: absolute; top: -1px; left: 5%; width: 90%; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--warm-gold) 30%, var(--dawn-orange) 70%, transparent);
+      animation: warmLine 4s linear infinite;
+    }
+    @keyframes warmLine { 0%{filter:brightness(0.6)} 50%{filter:brightness(1.4)} 100%{filter:brightness(0.6)} }
+
+    #text-content {
+      font-size: clamp(0.92rem, 2.1vw, 1.15rem);
+      line-height: 2.1;
+      color: var(--text-warm);
+      min-height: 3em;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    #click-indicator {
+      position: absolute; bottom: 0.8em; right: 1.5em;
+      opacity: 0; transition: opacity 0.3s ease;
+      color: var(--warm-gold);
+      font-size: 0.8rem;
+      animation: bounce 1.1s ease-in-out infinite;
+    }
+    #click-indicator.show { opacity: 1; }
+    @keyframes bounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(5px)} }
+
+    /* ---- Ending ---- */
+    #ending-overlay {
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; z-index: 200;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(15, 8, 0, 0.88);
+      opacity: 0; pointer-events: none;
+      transition: opacity 1.5s ease;
+    }
+    #ending-overlay.visible { opacity: 1; pointer-events: auto; }
+
+    #ending-title {
+      font-size: clamp(1.6rem, 5vw, 3rem);
+      color: var(--warm-gold);
+      letter-spacing: 0.4em;
+      text-shadow: 0 0 25px rgba(212,160,23,0.6);
+      margin-bottom: 0.4em;
+    }
+    #ending-mark {
+      font-size: clamp(0.85rem, 2.5vw, 1.3rem);
+      color: var(--text-muted);
+      letter-spacing: 0.4em;
+      margin-bottom: 2.8em;
+    }
+
+    .ending-btn {
+      display: block; margin: 0.45em auto;
+      padding: 0.55em 2.2em;
+      font-family: 'DotGothic16', monospace;
+      font-size: clamp(0.65rem, 1.4vw, 0.82rem);
+      letter-spacing: 0.12em;
+      cursor: pointer; border-radius: 2px;
+      transition: all 0.2s; text-align: center;
+      text-decoration: none;
+    }
+    #restart-btn {
+      background: transparent;
+      border: 1px solid var(--warm-gold);
+      color: var(--warm-gold);
+    }
+    #restart-btn:hover { background: rgba(212,160,23,0.12); }
+    #back-btn {
+      background: transparent;
+      border: 1px solid var(--text-muted);
+      color: var(--text-muted);
+    }
+    #back-btn:hover { background: rgba(196,168,130,0.1); }
+  </style>
+</head>
+<body>
+<div id="game">
+  <canvas id="bg-canvas"></canvas>
+  <div id="vignette"></div>
+  <div id="progress-bar" style="width:0%"></div>
+
+  <div id="title-screen">
+    <div class="title-main">あくる日</div>
+    <div class="title-sub">掌編小説</div>
+    <div class="title-credit">mines-path</div>
+    <div class="title-start">── タップして始める ──</div>
+  </div>
+
+  <div id="page-counter"></div>
+
+  <div id="text-window">
+    <div id="text-content"></div>
+    <div id="click-indicator">▼</div>
+  </div>
+
+  <div id="ending-overlay">
+    <div id="ending-title">あくる日</div>
+    <div id="ending-mark">― 了 ―</div>
+    <button id="restart-btn" class="ending-btn">もう一度読む</button>
+    <a href="/blog/nb175216ff563/" id="back-btn" class="ending-btn">← 記事に戻る</a>
+  </div>
+</div>
+
+<script>
+// =============================================
+// Story
+// =============================================
+const STORY = [
+  "あくる日、\n目が覚めると既に空は明るくなっていた。",
+  "葉っぱの上の雫が、生まれたばかりの光を反射して",
+  "周辺の世界を自分が見える形とは異なる形で写し出していた。",
+  "もうすぐ夜明けだ。",
+  "この世界は美しい。俊平は思った。",
+  "まるで昨日までのドタバタが嘘のようだ。",
+  "遠く離れた地で彼はピザ職人を志した。",
+  "きっかけは他愛もなく、当時付き合っていた彼女から、イタリア料理をせがまれて少しずつ自分で作り始めたことだ。",
+  "大学も卒業が見えてきたころに、平凡なサラリーマンは務まらないだろうと思い、ネットのいつも見ていたレシピサイトの見習いシェフの募集に応募した。",
+  "世界中どこもつまらなそうに見える仕事は、人が寄り付かないのだろう。",
+  "少なくとも俊平には魅力的に思えたピザ職人も、現地の若い人から見れば\nしょうもない平凡な仕事にうつっているかもしれない。",
+  "そんな俊平を受け入れてくれた70歳すぎのシェフは、\nとても穏やかな人だった。",
+  "ピザは単純そうに見えて奥が深い。\n何十回、何百回焼いても到底、彼のような仕上がりにはならない。",
+  "インスピレーションを受けることができる時間があることを、\n俊平は最近知ることができた。",
+  "それは自分がこれまでに活動していなかった時間に、\nピザを作るときだ。",
+  "とりわけ、この朝日が昇るタイミングで焼くピザには\n自分のこれまでに出せていない一面がだせる。",
+  "まるで自分だけではない、\n世界のエッセンスを取り入れることができるかのように\nピザが自分の手から離れていく感覚があった。",
+  "まさか世界とピザが繋がっているだなんて、\nこの世の奇跡は案外身近にあるのかもしれない。",
+  "重くなった葉っぱの上の雫が、大きくはずんで落ちた。",
+  "ピザ窯から天たかく昇る煙が、焼きごろを知らせる。",
+  "少し高くのぼった太陽が、焼き立てのピザを美味しそうに眺めていた。",
+];
+
+// =============================================
+// Background (Canvas)
+// =============================================
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+
+let stars = [];
+let smoke = [];
+let bgProgress = 0;
+let targetBg = 0;
+let frameCount = 0;
+
+function initStars() {
+  stars = [];
+  for (let i = 0; i < 90; i++) {
+    stars.push({
+      x: Math.random(),
+      y: Math.random() * 0.6,
+      r: Math.random() * 1.4 + 0.4,
+      phase: Math.random() * Math.PI * 2,
+    });
+  }
+}
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+
+function lerpRGB(c1, c2, t) {
+  const p = n => parseInt(n, 16);
+  const r1 = p(c1.slice(1,3)), g1 = p(c1.slice(3,5)), b1 = p(c1.slice(5,7));
+  const r2 = p(c2.slice(1,3)), g2 = p(c2.slice(3,5)), b2 = p(c2.slice(5,7));
+  return `rgb(${Math.round(lerp(r1,r2,t))},${Math.round(lerp(g1,g2,t))},${Math.round(lerp(b1,b2,t))})`;
+}
+
+// Sky gradient stops at p=[0, 0.3, 0.6, 1.0]
+const SKY_KEYS = [
+  { p:0,   top:'#06091f', mid:'#0d1535', horizon:'#1a1535' },
+  { p:0.3, top:'#0d1535', mid:'#1a1060', horizon:'#7a2a10' },
+  { p:0.6, top:'#1a2a6c', mid:'#8a3a3a', horizon:'#e8641a' },
+  { p:1.0, top:'#2e60a8', mid:'#e8743a', horizon:'#ffe090' },
+];
+
+function getSkyColors(p) {
+  let i = 0;
+  while (i < SKY_KEYS.length - 2 && SKY_KEYS[i+1].p <= p) i++;
+  const a = SKY_KEYS[i], b = SKY_KEYS[i+1];
+  const t = (p - a.p) / (b.p - a.p);
+  return {
+    top:     lerpRGB(a.top,     b.top,     t),
+    mid:     lerpRGB(a.mid,     b.mid,     t),
+    horizon: lerpRGB(a.horizon, b.horizon, t),
+  };
+}
+
+function drawSky(w, h, p) {
+  const c = getSkyColors(p);
+  const hLine = h * 0.7;
+  const g = ctx.createLinearGradient(0, 0, 0, hLine);
+  g.addColorStop(0,   c.top);
+  g.addColorStop(0.5, c.mid);
+  g.addColorStop(1,   c.horizon);
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, w, hLine);
+
+  // Ground
+  ctx.fillStyle = '#050c04';
+  ctx.fillRect(0, hLine, w, h - hLine);
+}
+
+function drawStars(w, h, p) {
+  const alpha = Math.max(0, 1 - p * 2.8);
+  if (alpha <= 0) return;
+  stars.forEach(s => {
+    s.phase += 0.018;
+    const a = alpha * (0.4 + 0.6 * Math.sin(s.phase));
+    ctx.fillStyle = `rgba(255,255,220,${a})`;
+    ctx.beginPath();
+    ctx.arc(s.x * w, s.y * h * 0.65, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawSun(w, h, p) {
+  if (p < 0.35) return;
+  const t = Math.min((p - 0.35) / 0.65, 1);
+  const hLine = h * 0.7;
+  const sx = w * 0.62;
+  const sy = hLine - t * h * 0.42;
+  const sr = Math.min(w, h) * (0.022 + t * 0.018);
+
+  // Outer glow
+  const og = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr * 5);
+  og.addColorStop(0,   `rgba(255,210,60,${0.35 * t})`);
+  og.addColorStop(0.4, `rgba(255,140,20,${0.18 * t})`);
+  og.addColorStop(1,   'rgba(255,80,0,0)');
+  ctx.fillStyle = og;
+  ctx.beginPath();
+  ctx.arc(sx, sy, sr * 5, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Sun disk
+  const alpha = Math.min(t * 1.8, 1);
+  ctx.fillStyle = `rgba(255,215,70,${alpha})`;
+  ctx.beginPath();
+  ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawHills(w, h) {
+  const hLine = h * 0.7;
+
+  // Far hill
+  ctx.beginPath();
+  ctx.moveTo(0, hLine);
+  ctx.bezierCurveTo(w*0.12, hLine - h*0.12, w*0.28, hLine - h*0.05, w*0.5, hLine - h*0.1);
+  ctx.bezierCurveTo(w*0.68, hLine - h*0.15, w*0.82, hLine - h*0.06, w, hLine - h*0.08);
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+  ctx.fillStyle = 'rgba(8,18,6,0.72)';
+  ctx.fill();
+
+  // Near hill
+  ctx.beginPath();
+  ctx.moveTo(0, hLine + h*0.04);
+  ctx.bezierCurveTo(w*0.1, hLine - h*0.02, w*0.25, hLine + h*0.01, w*0.42, hLine - h*0.03);
+  ctx.bezierCurveTo(w*0.58, hLine - h*0.07, w*0.72, hLine - h*0.01, w, hLine + h*0.02);
+  ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.closePath();
+  ctx.fillStyle = 'rgba(4,10,3,0.88)';
+  ctx.fill();
+}
+
+function drawCypress(x, y, w, h) {
+  const s = Math.min(w, h) / 600;
+  ctx.fillStyle = '#081408';
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  ctx.lineTo(x - 9*s, y + 35*s);
+  ctx.lineTo(x - 5*s, y + 35*s);
+  ctx.lineTo(x - 4*s, y + 70*s);
+  ctx.lineTo(x + 4*s, y + 70*s);
+  ctx.lineTo(x + 5*s, y + 35*s);
+  ctx.lineTo(x + 9*s, y + 35*s);
+  ctx.closePath();
+  ctx.fill();
+}
+
+function drawOven(w, h, p) {
+  const hLine = h * 0.7;
+  const ox = w * 0.77, oy = hLine;
+  const s = Math.min(w, h) / 550;
+
+  // Base
+  ctx.fillStyle = '#110800';
+  ctx.fillRect(ox - 55*s, oy - 5*s, 110*s, 22*s);
+
+  // Dome
+  ctx.fillStyle = '#1a0d00';
+  ctx.beginPath();
+  ctx.ellipse(ox, oy - 4*s, 52*s, 32*s, 0, Math.PI, 0);
+  ctx.fill();
+
+  // Glow from opening when late in story
+  if (p > 0.25) {
+    const ga = Math.min((p - 0.25) * 1.3, 0.85);
+    const rg = ctx.createRadialGradient(ox, oy, 0, ox, oy, 28*s);
+    rg.addColorStop(0, `rgba(255,110,10,${ga})`);
+    rg.addColorStop(1, 'rgba(255,60,0,0)');
+    ctx.fillStyle = rg;
+    ctx.beginPath();
+    ctx.ellipse(ox, oy - 1*s, 20*s, 14*s, 0, Math.PI, 0);
+    ctx.fill();
+  }
+}
+
+function addSmoke(w, h, p) {
+  if (p < 0.8 || frameCount % 6 !== 0) return;
+  const ox = w * 0.77, oy = h * 0.68;
+  smoke.push({
+    x: ox + (Math.random() - 0.5) * 12,
+    y: oy,
+    vx: (Math.random() - 0.5) * 0.6,
+    vy: -(0.6 + Math.random() * 0.5),
+    alpha: 0.38,
+    r: 4 + Math.random() * 4,
+  });
+}
+
+function updateSmoke() {
+  smoke = smoke.filter(s => s.alpha > 0.008);
+  smoke.forEach(s => {
+    s.x += s.vx; s.y += s.vy;
+    s.alpha *= 0.972; s.r *= 1.022;
+    s.vx += (Math.random() - 0.5) * 0.1;
+  });
+}
+
+function drawSmoke() {
+  smoke.forEach(s => {
+    ctx.fillStyle = `rgba(190,170,140,${s.alpha})`;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawFrame() {
+  const w = canvas.width, h = canvas.height;
+  frameCount++;
+
+  bgProgress += (targetBg - bgProgress) * 0.015;
+  const p = Math.min(Math.max(bgProgress, 0), 1);
+
+  ctx.clearRect(0, 0, w, h);
+  drawSky(w, h, p);
+  drawStars(w, h, p);
+  drawSun(w, h, p);
+  drawHills(w, h);
+
+  // Cypress trees
+  drawCypress(w * 0.13, h * 0.56, w, h);
+  drawCypress(w * 0.17, h * 0.59, w, h);
+  drawCypress(w * 0.86, h * 0.57, w, h);
+  drawCypress(w * 0.90, h * 0.60, w, h);
+
+  drawOven(w, h, p);
+  addSmoke(w, h, p);
+  updateSmoke();
+  drawSmoke();
+
+  requestAnimationFrame(drawFrame);
+}
+
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+// =============================================
+// Engine
+// =============================================
+const state = {
+  index: -1,
+  typing: false,
+  timer: null,
+  started: false,
+  ended: false,
+};
+
+const elText    = document.getElementById('text-content');
+const elCue     = document.getElementById('click-indicator');
+const elWindow  = document.getElementById('text-window');
+const elTitle   = document.getElementById('title-screen');
+const elEnding  = document.getElementById('ending-overlay');
+const elBar     = document.getElementById('progress-bar');
+const elCounter = document.getElementById('page-counter');
+
+function typeText(text) {
+  state.typing = true;
+  elCue.classList.remove('show');
+  elText.textContent = '';
+  let i = 0;
+  const tick = () => {
+    if (i < text.length) {
+      elText.textContent += text[i++];
+      state.timer = setTimeout(tick, 38);
+    } else {
+      state.typing = false;
+      elCue.classList.add('show');
+    }
+  };
+  tick();
+}
+
+function showScene(idx) {
+  if (idx >= STORY.length) { showEnding(); return; }
+  state.index = idx;
+
+  const prog = idx / (STORY.length - 1);
+  targetBg = prog;
+  elBar.style.width = `${prog * 100}%`;
+  elCounter.textContent = `${idx + 1} / ${STORY.length}`;
+
+  typeText(STORY[idx]);
+}
+
+function advance() {
+  if (state.ended || !state.started) return;
+  if (state.typing) {
+    clearTimeout(state.timer);
+    state.typing = false;
+    elText.textContent = STORY[state.index];
+    elCue.classList.add('show');
+    return;
+  }
+  showScene(state.index + 1);
+}
+
+function startGame() {
+  state.started = true;
+  state.ended   = false;
+  state.index   = -1;
+  targetBg      = 0;
+  bgProgress    = 0;
+
+  elTitle.classList.remove('visible');
+  elWindow.classList.add('visible');
+  setTimeout(() => showScene(0), 300);
+}
+
+function showEnding() {
+  state.ended = true;
+  elWindow.classList.remove('visible');
+  targetBg = 1;
+  setTimeout(() => elEnding.classList.add('visible'), 900);
+}
+
+function restartGame() {
+  state.ended  = false;
+  elEnding.classList.remove('visible');
+  smoke = [];
+  bgProgress = 0;
+  targetBg   = 0;
+  setTimeout(() => {
+    elWindow.classList.add('visible');
+    showScene(0);
+  }, 500);
+}
+
+// Event bindings
+elTitle.addEventListener('click',  startGame);
+elWindow.addEventListener('click', advance);
+document.getElementById('restart-btn').addEventListener('click', restartGame);
+
+document.addEventListener('keydown', e => {
+  if (['Space','Enter','ArrowRight'].includes(e.code)) {
+    e.preventDefault();
+    if (!state.started) startGame(); else advance();
+  }
+});
+
+// Init
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+initStars();
+elTitle.classList.add('visible');
+drawFrame();
+</script>
+</body>
+</html>
