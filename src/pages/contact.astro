@@ -1,12 +1,27 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const TO_EMAIL = 'farewell.gibran@gmail.com';
+// Formspree endpoint — サインアップ後に取得した ID に置き換えてください
+// 例: 'https://formspree.io/f/xxxxxxxx'
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/REPLACE_WITH_YOUR_ID';
 ---
 <BaseLayout title="お問い合わせ" description="mines-path へのお問い合わせはこちらから。">
   <div class="contact-page content-container">
     <h1>お問い合わせ</h1>
-    <p class="contact-lead">ご質問・ご意見・ご要望はこちらのフォームからお送りください。<br />通常3〜5営業日以内にご返信します。</p>
+    <p class="contact-lead">ご質問・ご意見・ご要望はこちらからお送りください。<br />通常3〜5営業日以内にご返信します。</p>
 
-    <form class="contact-form" name="contact" method="POST" data-netlify="true" action="/contact/thanks">
+    <div class="contact-direct">
+      <p class="contact-direct-label">直接メールでのお問い合わせはこちら</p>
+      <a class="contact-mail-btn" href={`mailto:${TO_EMAIL}?subject=mines-path%20お問い合わせ`}>
+        ✉ {TO_EMAIL}
+      </a>
+      <p class="contact-direct-hint">クリックするとメールアプリが開きます</p>
+    </div>
+
+    <div class="contact-divider"><span>または、フォームから送信</span></div>
+
+    <form class="contact-form" method="POST" action={FORMSPREE_ENDPOINT}>
       <div class="form-group">
         <label for="name">お名前 <span class="required">*</span></label>
         <input type="text" id="name" name="name" required placeholder="山田 太郎" />
@@ -23,6 +38,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <label for="message">メッセージ <span class="required">*</span></label>
         <textarea id="message" name="message" required rows="6" placeholder="お問い合わせ内容をご記入ください"></textarea>
       </div>
+      <input type="hidden" name="_subject" value="【mines-path】お問い合わせフォームより" />
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
       <button type="submit" class="btn btn-primary">送信する</button>
     </form>
 
@@ -35,7 +52,60 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 <style>
 .contact-page { padding: var(--space-3xl) var(--space-lg); max-width: 640px; }
 .contact-page h1 { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: var(--space-md); }
-.contact-lead { color: var(--color-text-muted); line-height: 1.9; margin-bottom: var(--space-3xl); }
+.contact-lead { color: var(--color-text-muted); line-height: 1.9; margin-bottom: var(--space-2xl); }
+
+.contact-direct {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-accent-dim);
+  border-radius: var(--radius-md);
+  padding: var(--space-xl);
+  text-align: center;
+  margin-bottom: var(--space-xl);
+}
+.contact-direct-label {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+}
+.contact-mail-btn {
+  display: inline-block;
+  padding: 0.8em 1.8em;
+  background: var(--color-accent);
+  color: #fff;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  transition: opacity var(--transition-fast);
+  word-break: break-all;
+}
+.contact-mail-btn:hover { opacity: 0.85; }
+.contact-direct-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-faint);
+  margin-top: var(--space-sm);
+  margin-bottom: 0;
+}
+
+.contact-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--color-text-faint);
+  font-size: 0.8rem;
+  margin: var(--space-xl) 0;
+  gap: var(--space-md);
+}
+.contact-divider::before,
+.contact-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
 .contact-form { display: flex; flex-direction: column; gap: var(--space-xl); }
 .form-group { display: flex; flex-direction: column; gap: var(--space-sm); }
 .form-group label { font-size: 0.9rem; font-weight: 600; color: var(--color-text); }
