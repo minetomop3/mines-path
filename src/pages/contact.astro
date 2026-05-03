@@ -31,6 +31,7 @@ const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mjglglwo';
     </form>
 
     <div class="contact-note">
+      <p>※ 本フォームは Formspree（米国 Formspree, Inc. 提供）を利用しています。送信された情報は同社のサーバーを経由して届けられます。詳細は<a href="/privacy">プライバシーポリシー</a>をご確認ください。送信をもって同意いただいたものとみなします。</p>
       <p>※ お問い合わせの内容によっては、返信できない場合もございます。あらかじめご了承ください。</p>
     </div>
   </div>
@@ -62,5 +63,7 @@ const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mjglglwo';
 .form-group textarea:focus { outline: none; border-color: var(--color-accent); }
 .form-group textarea { resize: vertical; }
 .contact-note { margin-top: var(--space-2xl); padding: var(--space-lg); background: var(--color-surface); border-radius: var(--radius-md); }
-.contact-note p { font-size: 0.82rem; color: var(--color-text-faint); margin: 0; }
+.contact-note p { font-size: 0.82rem; color: var(--color-text-faint); margin: 0; line-height: 1.7; }
+.contact-note p + p { margin-top: var(--space-sm); }
+.contact-note a { color: var(--color-accent); }
 </style>
