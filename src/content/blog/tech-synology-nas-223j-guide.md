@@ -13,8 +13,8 @@ draft: false
 isNovel: false
 originalSource: "original"
 related:
+  - "tech-synology-photos-guide"
   - "tech-obsidian-pkm-guide"
-  - "nba775177db94"
 ---
 
 ## はじめに：なぜ今、自宅NASなのか
@@ -93,6 +93,9 @@ RAID 1（ミラーリング）設定にすることで、1台が壊れてもデ�
 - **オフラインでも使える**：ローカルファイルなので接続不要で編集可能
 - **月額同期費用ゼロ**：Obsidian Sync（月約1,000円）が不要に
 
+> [ObsidianとSynology NASの連携｜知識を資産に変えるメモ環境の作り方](/blog/tech-obsidian-pkm-guide/)
+> Synology Driveを使った具体的な同期手順、Kindleハイライトの取り込み、知識のグラフ化まで解説しています。
+
 ---
 
 ## 写真管理：Synology Photos の活用
@@ -105,6 +108,11 @@ Synology の純正アプリ「**Synology Photos**」は、Google フォトの自
 - 家族との共有アルバム
 
 設定は **Package Center** から「Synology Photos」をインストールするだけ。スマホアプリも無料で提供されています。
+
+個人スペースと共有スペースの使い分け、スマホの自動バックアップ設定、DS223jでの顔認識の実力については、別記事で詳しくまとめました。
+
+> [Synology Photos 実践ガイド｜Googleフォトを卒業して写真を自分のNASで管理する](/blog/tech-synology-photos-guide/)
+> Googleフォトの容量課金から卒業するための実践手順。つまずきやすいポイントと、見落としがちなバックアップの落とし穴まで解説します。
 
 ---
 
@@ -141,4 +149,4 @@ Synology DS223j は、単なる「データ保存装置」ではありません�
 
 **知識を整理し、写真を守り、家族の思い出を管理し、クラウドから自立する——**そのための「自分だけのデジタル基盤」です。
 
-Obsidianとの連携については、次の記事で詳しく解説します。
+Obsidianとの連携については、[こちらの記事](/blog/tech-obsidian-pkm-guide/)で詳しく解説しています。写真管理については [Synology Photos 実践ガイド](/blog/tech-synology-photos-guide/) をどうぞ。

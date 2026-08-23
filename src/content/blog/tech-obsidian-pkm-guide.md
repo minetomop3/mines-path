@@ -64,6 +64,11 @@ Obsidianのデータは、PC上にシンプルなMarkdown（MD）形式のテキ
 
 私が使っているのはSynologyのNASなので、Synology Driveのアプリを使ってObsidianと同期しています。
 
+（NASそのものの選び方や初期設定については、こちらにまとめています）
+
+> [Synology NAS DS223j 完全活用ガイド｜自宅サーバーで知的生活を豊かにする](/blog/tech-synology-nas-223j-guide/)
+> DS223jの初期設定、HDDの選び方、RAID構成、セキュリティ設定まで。自宅NASを導入するところから解説しています。
+
 Synology Driveの設定画面を開きます。そして、フォルダを作成します。
 
 ![Synology Driveの設定画面](/blog-images/nba775177db94_1758459752-b92LMNtDVFjxHvJK8PXg1Q7f.png)
